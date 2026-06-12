@@ -11,7 +11,8 @@ type Props = {
 
 export default function WhatIfSimulator({ inputs, setInputs }: Props) {
   const reduceDriving = () => {
-    setInputs({ ...inputs, kilometersDrivenPerWeek: Math.max(0, inputs.kilometersDrivenPerWeek - 50) });
+    const currentKm = typeof inputs.kilometersDrivenPerWeek === 'number' ? inputs.kilometersDrivenPerWeek : 0;
+    setInputs({ ...inputs, kilometersDrivenPerWeek: Math.max(0, currentKm - 50) });
   };
 
   const switchDiet = () => {

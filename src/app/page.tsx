@@ -1,65 +1,140 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { calculateFootprint, FootprintResult, UserInputs } from '@/engine/calculations';
+import { generateRecommendations, Recommendation } from '@/engine/recommendations';
+import Calculator3D from '@/components/Calculator3D';
+import EcoScoreDisplay from '@/components/EcoScoreDisplay';
+import WhatIfSimulator from '@/components/WhatIfSimulator';
+import { Leaf } from 'lucide-react';
 
 export default function Home() {
+  const [inputs, setInputs] = useState<UserInputs>({
+    kilometersDrivenPerWeek: 250,
+    vehicleType: 'petrol',
+    indianZone: 'southern',
+    flightHoursPerYear: 5,
+    electricityKWhPerMonth: 800,
+    lpgCylindersPerYear: 6,
+    naturalGasThermsPerMonth: 40,
+    dietType: 'average',
+    recyclingLevel: 'average',
+  });
+
+  const [result, setResult] = useState<FootprintResult | null>(null);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+
+  useEffect(() => {
+    const res = calculateFootprint(inputs);
+    setResult(res);
+    setRecommendations(generateRecommendations(inputs, res));
+  }, [inputs]);
+
+  // Dynamic Scroll Background Darkening
+  const { scrollYProgress } = useScroll();
+  const backgroundDarkness = useTransform(scrollYProgress, [0, 0.4, 0.8, 1], [0.3, 0.5, 0.9, 0.95]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="flex flex-col items-center overflow-x-hidden font-sans relative">
+      
+      {/* Unsplash Nature Background Image */}
+      <div 
+        className="fixed inset-0 pointer-events-none -z-50 bg-cover bg-center bg-no-repeat"
+        style={{ 
+          backgroundImage: `url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=2000&q=80')`,
+          opacity: 0.15 
+        }}
+      />
+
+      {/* Dynamic Dark Background Overlay */}
+      <motion.div 
+        className="fixed inset-0 bg-[#022c22] pointer-events-none -z-40"
+        style={{ opacity: backgroundDarkness }}
+      />
+
+      {/* SECTION 1: Hero */}
+      <section className="w-full min-h-screen flex flex-col items-center justify-center relative p-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="text-center flex flex-col items-center"
+        >
+          <div className="p-6 bg-white/40 backdrop-blur-md rounded-full mb-8 shadow-sm border border-white/50">
+            <Leaf className="w-16 h-16 text-black" strokeWidth={2} />
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-black mb-4 drop-shadow-md">
+            Ecosystem <span className="text-emerald-800 font-medium">Intelligence</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-2xl text-slate-900 max-w-2xl font-medium drop-shadow-sm">
+            An elegant, interactive way to understand and optimize your environmental footprint.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        </motion.div>
+        
+        {/* Scroll Indicator */}
+        <motion.div 
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-10 flex flex-col items-center gap-2 text-black font-bold tracking-widest uppercase text-xs"
+        >
+          <span>Scroll to explore</span>
+          <div className="w-px h-12 bg-black rounded-full" />
+        </motion.div>
+      </section>
+
+      {/* SECTION 2: Data & Score */}
+      <section className="w-full min-h-screen max-w-[1400px] p-6 md:p-12 flex flex-col justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+          {/* Left Column: Calculator */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Calculator3D inputs={inputs} setInputs={setInputs} />
+          </motion.div>
+
+          {/* Right Column: Score */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            Documentation
-          </a>
+            {result && <EcoScoreDisplay result={result} recommendations={recommendations} showTimeline={false} />}
+          </motion.div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* SECTION 3: Simulator */}
+      <section className="w-full min-h-[70vh] flex flex-col justify-center items-center p-6 md:p-12 bg-white/5 border-y border-emerald-800/10 backdrop-blur-sm">
+        <div className="w-full max-w-[1000px]">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <WhatIfSimulator inputs={inputs} setInputs={setInputs} />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* SECTION 4: Timeline */}
+      <section className="w-full min-h-screen p-6 md:p-12 flex flex-col items-center pt-24 pb-32">
+        <div className="w-full max-w-[1400px]">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {result && <EcoScoreDisplay result={result} recommendations={recommendations} showScore={false} />}
+          </motion.div>
+        </div>
+      </section>
+
+    </main>
   );
 }

@@ -6,9 +6,10 @@ import { UserInputs, FootprintResult } from './calculations';
  * over a local infrastructure database would output.
  */
 export function generateLocalizedAINudge(inputs: UserInputs, result: FootprintResult): string {
+  const getNum = (val: number | '') => val === '' ? 0 : val;
   
   // Example 1: Localized Transit based on Zone
-  if (inputs.vehicleType !== 'publicTransit' && inputs.kilometersDrivenPerWeek > 50) {
+  if (inputs.vehicleType !== 'publicTransit' && getNum(inputs.kilometersDrivenPerWeek) > 50) {
     if (inputs.indianZone === 'southern') {
       return `Taking the Namma Metro Purple Line from Indiranagar or the Chennai Metro could bypass massive traffic and reduce your ${inputs.vehicleType} footprint by 40%.`;
     } else if (inputs.indianZone === 'western') {
@@ -19,7 +20,7 @@ export function generateLocalizedAINudge(inputs: UserInputs, result: FootprintRe
   }
 
   // Example 2: Localized Energy/AC based on grid intensity
-  if (inputs.electricityKWhPerMonth > 600) {
+  if (getNum(inputs.electricityKWhPerMonth) > 600) {
     if (inputs.indianZone === 'southern') {
       return `In current humid conditions (85%), shifting your AC from 18°C to 24°C saves 4.2 kWh/day on the high-intensity Southern Grid.`;
     } else if (inputs.indianZone === 'northern') {
@@ -35,7 +36,7 @@ export function generateLocalizedAINudge(inputs: UserInputs, result: FootprintRe
   }
 
   // Example 4: LPG Optimization
-  if (inputs.lpgCylindersPerYear > 8) {
+  if (getNum(inputs.lpgCylindersPerYear) > 8) {
     return `You're using >8 LPG cylinders. Switching to an induction cooktop for boiling water and making tea leverages India's growing renewable grid mix and cuts indoor emissions.`;
   }
 

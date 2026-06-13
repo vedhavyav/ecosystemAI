@@ -9,6 +9,7 @@ export type Recommendation = {
 };
 
 export function generateRecommendations(inputs: UserInputs, result: FootprintResult): Recommendation[] {
+  const getNum = (val: number | '') => val === '' ? 0 : val;
   const recs: Recommendation[] = [];
 
   // 1. Dynamic AI Context Nudge (LLM Mock)
@@ -32,7 +33,7 @@ export function generateRecommendations(inputs: UserInputs, result: FootprintRes
     });
   }
 
-  if (inputs.flightHoursPerYear > 10) {
+  if (getNum(inputs.flightHoursPerYear) > 10) {
     recs.push({
       title: 'Reduce Air Travel',
       description: 'Flights contribute massively to carbon emissions. Consider taking trains for regional trips or utilizing virtual meetings.',
@@ -50,7 +51,7 @@ export function generateRecommendations(inputs: UserInputs, result: FootprintRes
     });
   }
 
-  if (inputs.electricityKWhPerMonth > 600) {
+  if (getNum(inputs.electricityKWhPerMonth) > 600) {
     recs.push({
       title: 'Adopt Renewable Energy',
       description: 'Your home energy usage is high. Opt into a green energy program with your utility provider or explore solar options.',

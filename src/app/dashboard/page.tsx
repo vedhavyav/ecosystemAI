@@ -1,16 +1,23 @@
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardClient from './DashboardClient';
+import { useAuth } from '@/lib/firebase/authContext';
 
-export const runtime = 'edge';
+export default function DashboardPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-export default async function DashboardPage() {
-  const user = await currentUser();
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
 
-  // Protect the route
-  if (!user) {
-    redirect('/');
+  if (loading || !user) {
+    return <div className="min-h-screen bg-[#022c22] flex items-center justify-center"><p className="text-white">Loading...</p></div>;
   }
 
-  return <DashboardClient userFirstName={user.firstName || 'User'} />;
+  return <DashboardClient userFirstName={user.displayName || 'User'} />;
 }

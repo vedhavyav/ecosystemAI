@@ -1,18 +1,23 @@
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminClient from './AdminClient';
+import { useAuth } from '@/lib/firebase/authContext';
 
-export const runtime = 'edge';
+export default function AdminPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-export default async function AdminPage() {
-  const user = await currentUser();
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
 
-  // Protect the route
-  if (!user) {
-    redirect('/sign-in');
+  if (loading || !user) {
+    return <div className="min-h-screen bg-black flex items-center justify-center"><p className="text-white">Loading...</p></div>;
   }
 
-  // In a real app, we'd check if user.publicMetadata.role === 'admin'
-  // For the hackathon, we'll let any logged-in user see the mock admin page
   return <AdminClient />;
 }

@@ -4,11 +4,10 @@ import { useState, useEffect } from "react";
 
 import { Home, LineChart, LogIn, User, LogOut } from "lucide-react";
 import { NavBar } from "@/components/ui/tubelight-navbar";
-import { useUser, useClerk } from "@clerk/nextjs";
+import { useAuth } from "@/lib/firebase/authContext";
 
 export function Navigation() {
-  const { isSignedIn, user, isLoaded } = useUser();
-  const { signOut, openSignIn } = useClerk();
+  const { user, loading, signInWithGoogle, signOut } = useAuth();
 
   const [isB2B, setIsB2B] = useState(false);
 
@@ -24,9 +23,9 @@ export function Navigation() {
     { name: 'System Tests', url: '/tests', icon: LineChart },
   ];
 
-  if (!isLoaded) {
+  if (loading) {
     // Keep it clean while checking auth
-  } else if (isSignedIn) {
+  } else if (user) {
     if (isB2B) {
       navItems.unshift({ name: 'Corporate ESG', url: '/admin', icon: Home });
     }
@@ -35,18 +34,18 @@ export function Navigation() {
       name: 'Sign Out', 
       url: '#', 
       icon: LogOut,
-      action: () => {
+      action: async () => {
         if (window.confirm('Are you sure you want to sign out?')) {
-          signOut();
+          await signOut();
         }
       }
     });
   } else {
     navItems.push({ 
-      name: 'Sign In', 
+      name: 'Sign In with Google', 
       url: '#', 
       icon: LogIn,
-      action: () => openSignIn()
+      action: async () => await signInWithGoogle()
     });
   }
 

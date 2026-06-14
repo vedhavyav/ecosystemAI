@@ -8,6 +8,8 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, pass: string) => Promise<void>;
+  signUpWithEmail: (email: string, pass: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -15,6 +17,8 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   signInWithGoogle: async () => {},
+  signInWithEmail: async () => {},
+  signUpWithEmail: async () => {},
   signOut: async () => {},
 });
 
@@ -45,6 +49,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google", error);
+      throw error;
+    }
+  };
+
+  const signInWithEmail = async (email: string, pass: string) => {
+    if (!auth) return;
+    const { signInWithEmailAndPassword } = await import("firebase/auth");
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (error) {
+      console.error("Error signing in with Email", error);
+      throw error;
+    }
+  };
+
+  const signUpWithEmail = async (email: string, pass: string) => {
+    if (!auth) return;
+    const { createUserWithEmailAndPassword } = await import("firebase/auth");
+    try {
+      await createUserWithEmailAndPassword(auth, email, pass);
+    } catch (error) {
+      console.error("Error signing up with Email", error);
+      throw error;
     }
   };
 
@@ -58,7 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut }}>
       {children}
     </AuthContext.Provider>
   );

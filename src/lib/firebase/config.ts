@@ -14,7 +14,7 @@ const firebaseConfig = {
 let app;
 let auth: ReturnType<typeof getAuth>;
 
-if (typeof window !== "undefined" || process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+if (typeof window !== "undefined") {
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   auth = getAuth(app);
 }

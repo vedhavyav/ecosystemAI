@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { UserInputs, calculateFootprint } from '@/engine/calculations';
+import { UserInputs, calculateFootprint, FootprintResult } from '@/engine/calculations';
 import { generateRecommendations } from '@/engine/recommendations';
 import Calculator3D from '@/components/Calculator3D';
 import EcoScoreDisplay from '@/components/EcoScoreDisplay';
@@ -83,6 +83,7 @@ export default function DashboardClient({ userFirstName }: Props) {
       alert('Please sign in to log your score.');
       return;
     }
+    if (!result) return;
 
     await saveFootprintRecord(user.uid, inputs, result);
 

@@ -1,0 +1,13 @@
+steps:
+  # Install dependencies
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['ci']
+
+  # Run Jest Test Suite
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['run', 'test']
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -75,8 +75,8 @@ export default function AdminClient() {
             <div>
               <h2 className="text-2xl font-black text-white mb-2">SEBI BRSR Compliance Export</h2>
               <p className="text-emerald-200/60">
-                Generate an audit-ready PDF/Excel report of your workforce's Scope 3 commuter data,
-                anonymized and differential-privacy protected.
+                Generate an audit-ready PDF/Excel report of your workforce&apos;s Scope 3 commuter
+                data, anonymized and differential-privacy protected.
               </p>
             </div>
 

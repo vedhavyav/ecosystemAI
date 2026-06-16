@@ -31,6 +31,15 @@ jobs:
     - name: Build Next.js
       run: npm run build
       
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+    - name: Run Lighthouse CI
+      run: npm run lhci:mobile
+      
     # Cypress E2E tests can be added here once we ensure dev server can run in CI
     # - name: Cypress run
     #   uses: cypress-io/github-action@v5

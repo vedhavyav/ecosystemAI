@@ -12,6 +12,7 @@
     "test:watch": "jest --watch",
     "test:e2e": "start-server-and-test dev http://localhost:3000 \"npx firebase emulators:exec 'cypress run'\"",
     "cypress:open": "cypress open",
+    "lhci:mobile": "lhci autorun",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
     "prepare": "husky"
   },
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.5",
+    "@vis.gl/react-google-maps": "^1.8.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
@@ -36,6 +38,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

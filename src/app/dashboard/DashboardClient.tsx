@@ -10,11 +10,12 @@ import { FootprintHistory } from '@/components/FootprintHistory';
 import FlashCard from '@/components/ui/FlashCard';
 import { saveFootprintRecord } from '@/lib/firebase/firestore';
 import { useAuth } from '@/lib/firebase/authContext';
-import { Save, CheckCircle2 } from 'lucide-react';
+import { Save, CheckCircle2, Map } from 'lucide-react';
 import GreenWallet from '@/components/GreenWallet';
 import UpiModal from '@/components/UpiModal';
 import RoleModal from '@/components/RoleModal';
 import { useRouter } from 'next/navigation';
+import LocalImpactMap from '@/components/LocalImpactMap';
 
 type Props = {
   userFirstName: string;
@@ -34,22 +35,36 @@ export default function DashboardClient({ userFirstName }: Props) {
   });
 
   const [saved, setSaved] = useState(false);
-  const [points, setPoints] = useState(0);
   const [showUpiModal, setShowUpiModal] = useState(false);
-  const [showRoleModal, setShowRoleModal] = useState(false);
-  const result = calculateFootprint(inputs);
+  const [showRoleModal, setShowRoleModal] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !localStorage.getItem('userRole');
+    }
+    return false;
+  });
+
+  const [result, setResult] = useState<FootprintResult | null>(null);
+
+  const [points, setPoints] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedPoints = localStorage.getItem('greenPoints');
+      return savedPoints ? Number(savedPoints) : 0;
+    }
+    return 0;
+  });
+
   const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!localStorage.getItem('userRole')) {
-      setShowRoleModal(true);
-    }
-    const savedPoints = localStorage.getItem('greenPoints');
-    if (savedPoints) {
-      setPoints(Number(savedPoints));
-    }
-  }, []);
+    let active = true;
+    calculateFootprint(inputs).then((res) => {
+      if (active) setResult(res);
+    });
+    return () => {
+      active = false;
+    };
+  }, [inputs]);
 
   const handleSelectRole = (role: 'individual' | 'b2b') => {
     localStorage.setItem('userRole', role);
@@ -112,6 +127,24 @@ export default function DashboardClient({ userFirstName }: Props) {
           <GreenWallet points={points} onRedeem={() => setShowUpiModal(true)} />
         </div>
 
+        {/* Actionable UX: Local Impact Map */}
+        {result && (
+          <div className="mb-20">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-sm border border-emerald-500/20">
+                <Map className="w-8 h-8 text-emerald-800" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-white">Local Impact & Action</h2>
+                <p className="text-emerald-100/70 font-light">
+                  Real-time environmental data and localized recommendations.
+                </p>
+              </div>
+            </div>
+            <LocalImpactMap result={result} />
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 relative z-10 mb-20">
           {/* Left Column: Calculator */}
           <div className="lg:col-span-7 bg-white/70 backdrop-blur-xl border border-white/80 rounded-[3rem] p-8 md:p-12 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] relative overflow-hidden">
@@ -130,7 +163,11 @@ export default function DashboardClient({ userFirstName }: Props) {
           {/* Right Column: Live Score & Save Button */}
           <div className="lg:col-span-5 flex flex-col gap-8">
             <div className="bg-emerald-950/40 backdrop-blur-xl border border-white/10 rounded-[3rem] p-8 md:p-12 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
-              <EcoScoreDisplay result={result} recommendations={[]} showTimeline={false} />
+              {result ? (
+                <EcoScoreDisplay result={result} recommendations={[]} showTimeline={false} />
+              ) : (
+                <div className="animate-pulse bg-white/10 rounded-2xl h-64 w-full"></div>
+              )}
 
               <div className="mt-12 flex justify-center">
                 <button
@@ -175,14 +212,18 @@ export default function DashboardClient({ userFirstName }: Props) {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {generateRecommendations(inputs, result).map((rec, i) => (
-              <FlashCard
-                key={i}
-                problem={rec.description}
-                solution={rec.title}
-                difficulty={rec.difficulty}
-              />
-            ))}
+            {result ? (
+              generateRecommendations(inputs, result).map((rec, i) => (
+                <FlashCard
+                  key={i}
+                  problem={rec.description}
+                  solution={rec.title}
+                  difficulty={rec.difficulty}
+                />
+              ))
+            ) : (
+              <div className="animate-pulse bg-white/10 rounded-2xl h-32 w-full col-span-3"></div>
+            )}
           </div>
         </div>
       </section>

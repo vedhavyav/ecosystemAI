@@ -13,8 +13,8 @@ describe('Calculations Engine', () => {
     recyclingLevel: 'high',
   };
 
-  it('calculates baseline correct values for zero inputs', () => {
-    const result = calculateFootprint(baseInputs);
+  it('calculates baseline correct values for zero inputs', async () => {
+    const result = await calculateFootprint(baseInputs);
     // Even with zero, diet and waste will have some baseline
     expect(result.totalCO2eKg).toBeGreaterThan(0);
     expect(result.categories.transportation).toBe(0);
@@ -22,7 +22,7 @@ describe('Calculations Engine', () => {
     expect(result.ecoScore).toBeGreaterThanOrEqual(90);
   });
 
-  it('correctly calculates high emissions for heavy usage', () => {
+  it('correctly calculates high emissions for heavy usage', async () => {
     const heavyInputs: UserInputs = {
       ...baseInputs,
       kilometersDrivenPerWeek: 500,
@@ -32,13 +32,13 @@ describe('Calculations Engine', () => {
       dietType: 'meatHeavy',
       recyclingLevel: 'low',
     };
-    const result = calculateFootprint(heavyInputs);
+    const result = await calculateFootprint(heavyInputs);
     expect(result.categories.transportation).toBeGreaterThan(1000);
     expect(result.categories.homeEnergy).toBeGreaterThan(1000);
     expect(result.ecoScore).toBeLessThan(50);
   });
 
-  it('handles empty string inputs gracefully (treated as 0)', () => {
+  it('handles empty string inputs gracefully (treated as 0)', async () => {
     const emptyInputs: UserInputs = {
       ...baseInputs,
       kilometersDrivenPerWeek: '',
@@ -47,18 +47,18 @@ describe('Calculations Engine', () => {
       naturalGasThermsPerMonth: '',
       lpgCylindersPerYear: '',
     };
-    const result = calculateFootprint(emptyInputs);
+    const result = await calculateFootprint(emptyInputs);
     expect(result.categories.transportation).toBe(0);
     expect(result.categories.homeEnergy).toBe(0);
   });
 
-  it('differentiates between vehicle types', () => {
-    const petrolResult = calculateFootprint({
+  it('differentiates between vehicle types', async () => {
+    const petrolResult = await calculateFootprint({
       ...baseInputs,
       kilometersDrivenPerWeek: 100,
       vehicleType: 'petrol',
     });
-    const electricResult = calculateFootprint({
+    const electricResult = await calculateFootprint({
       ...baseInputs,
       kilometersDrivenPerWeek: 100,
       vehicleType: 'electric',

@@ -29,6 +29,7 @@ export type FootprintResult = {
   };
   ecoScore: number;
   level: string;
+  localData: LocalizedEnvironmentalData;
 };
 
 /**
@@ -38,8 +39,16 @@ export type FootprintResult = {
  * @returns {FootprintResult} An object containing total emissions, categorized emissions,
  *                            and an eco-score out of 100 with an associated level.
  */
-export function calculateFootprint(inputs: UserInputs): FootprintResult {
+import {
+  fetchLocalizedEarthEngineData,
+  LocalizedEnvironmentalData,
+} from '@/services/GoogleEarthEngineService';
+
+export async function calculateFootprint(inputs: UserInputs): Promise<FootprintResult> {
   const parseNum = (val: number | '') => (val === '' ? 0 : Number(val));
+
+  // Await the mocked localized Earth Engine data
+  const localData = await fetchLocalizedEarthEngineData(inputs.indianZone || 'national-average');
 
   // Transportation (factors are now strictly per km)
   const kmDriven = parseNum(inputs.kilometersDrivenPerWeek);
@@ -69,10 +78,8 @@ export function calculateFootprint(inputs: UserInputs): FootprintResult {
     transportPerWeek * 52 +
     parseNum(inputs.flightHoursPerYear) * emissionFactors.transportation.flightPerHour;
 
-  // Home Energy (CEA localized grid factors)
-  const gridFactor =
-    emissionFactors.homeEnergy.electricityByGrid[inputs.indianZone || 'national-average'] ||
-    emissionFactors.homeEnergy.electricityByGrid['national-average'];
+  // Home Energy (Localized grid factors from mock Earth Engine API)
+  const gridFactor = localData.dynamicGridFactor;
   const energyAnnual =
     parseNum(inputs.electricityKWhPerMonth) * 12 * gridFactor +
     parseNum(inputs.naturalGasThermsPerMonth) * 12 * emissionFactors.homeEnergy.naturalGasPerTherm +
@@ -117,5 +124,6 @@ export function calculateFootprint(inputs: UserInputs): FootprintResult {
     },
     ecoScore,
     level,
+    localData,
   };
 }

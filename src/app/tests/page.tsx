@@ -9,108 +9,118 @@ export default function TestingDashboard() {
   const [results, setResults] = useState<{ name: string; passed: boolean; message: string }[]>([]);
 
   useEffect(() => {
-    const tests = [];
+    let active = true;
+    const runTests = async () => {
+      const tests = [];
 
-    try {
-      // Test 1: Vegan Diet vs Meat Diet
-      const veganFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 0,
-        vehicleType: 'publicTransit',
-        indianZone: 'national-average',
-        flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0,
-        lpgCylindersPerYear: 0,
-        naturalGasThermsPerMonth: 0,
-        dietType: 'vegan',
-        recyclingLevel: 'average',
-      });
-      const meatFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 0,
-        vehicleType: 'publicTransit',
-        indianZone: 'national-average',
-        flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0,
-        lpgCylindersPerYear: 0,
-        naturalGasThermsPerMonth: 0,
-        dietType: 'meatHeavy',
-        recyclingLevel: 'average',
-      });
-
-      if (veganFootprint.totalCO2eKg < meatFootprint.totalCO2eKg) {
-        tests.push({
-          name: 'Diet Calculation Check',
-          passed: true,
-          message: 'Vegan diet emits less than meat-heavy diet.',
+      try {
+        // Test 1: Vegan Diet vs Meat Diet
+        const veganFootprint = await calculateFootprint({
+          kilometersDrivenPerWeek: 0,
+          vehicleType: 'publicTransit',
+          indianZone: 'national-average',
+          flightHoursPerYear: 0,
+          electricityKWhPerMonth: 0,
+          lpgCylindersPerYear: 0,
+          naturalGasThermsPerMonth: 0,
+          dietType: 'vegan',
+          recyclingLevel: 'average',
         });
-      } else {
+        const meatFootprint = await calculateFootprint({
+          kilometersDrivenPerWeek: 0,
+          vehicleType: 'publicTransit',
+          indianZone: 'national-average',
+          flightHoursPerYear: 0,
+          electricityKWhPerMonth: 0,
+          lpgCylindersPerYear: 0,
+          naturalGasThermsPerMonth: 0,
+          dietType: 'meatHeavy',
+          recyclingLevel: 'average',
+        });
+
+        if (veganFootprint.totalCO2eKg < meatFootprint.totalCO2eKg) {
+          tests.push({
+            name: 'Diet Calculation Check',
+            passed: true,
+            message: 'Vegan diet emits less than meat-heavy diet.',
+          });
+        } else {
+          tests.push({
+            name: 'Diet Calculation Check',
+            passed: false,
+            message: 'Math error in diet emissions.',
+          });
+        }
+
+        // Test 2: Score Limits
+        if (veganFootprint.ecoScore >= 0 && veganFootprint.ecoScore <= 100) {
+          tests.push({
+            name: 'Eco Score Bounds',
+            passed: true,
+            message: 'Score is strictly between 0 and 100.',
+          });
+        } else {
+          tests.push({
+            name: 'Eco Score Bounds',
+            passed: false,
+            message: `Score out of bounds: ${veganFootprint.ecoScore}`,
+          });
+        }
+
+        // Test 3: EV vs Gas Transport
+        const evFootprint = await calculateFootprint({
+          kilometersDrivenPerWeek: 300,
+          vehicleType: 'electric',
+          indianZone: 'national-average',
+          flightHoursPerYear: 0,
+          electricityKWhPerMonth: 0,
+          lpgCylindersPerYear: 0,
+          naturalGasThermsPerMonth: 0,
+          dietType: 'average',
+          recyclingLevel: 'average',
+        });
+        const gasFootprint = await calculateFootprint({
+          kilometersDrivenPerWeek: 300,
+          vehicleType: 'petrol',
+          indianZone: 'national-average',
+          flightHoursPerYear: 0,
+          electricityKWhPerMonth: 0,
+          lpgCylindersPerYear: 0,
+          naturalGasThermsPerMonth: 0,
+          dietType: 'average',
+          recyclingLevel: 'average',
+        });
+
+        if (evFootprint.totalCO2eKg < gasFootprint.totalCO2eKg) {
+          tests.push({
+            name: 'Transport Calculation Check',
+            passed: true,
+            message: 'EV emits less than gasoline over same distance.',
+          });
+        } else {
+          tests.push({
+            name: 'Transport Calculation Check',
+            passed: false,
+            message: 'EV emitted more or equal to gasoline.',
+          });
+        }
+      } catch (e: unknown) {
         tests.push({
-          name: 'Diet Calculation Check',
+          name: 'Runtime Check',
           passed: false,
-          message: 'Math error in diet emissions.',
+          message: e instanceof Error ? e.message : 'Unknown error',
         });
       }
 
-      // Test 2: Score Limits
-      if (veganFootprint.ecoScore >= 0 && veganFootprint.ecoScore <= 100) {
-        tests.push({
-          name: 'Eco Score Bounds',
-          passed: true,
-          message: 'Score is strictly between 0 and 100.',
-        });
-      } else {
-        tests.push({
-          name: 'Eco Score Bounds',
-          passed: false,
-          message: `Score out of bounds: ${veganFootprint.ecoScore}`,
-        });
+      if (active) {
+        setResults(tests);
       }
+    };
 
-      // Test 3: EV vs Gas Transport
-      const evFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 300,
-        vehicleType: 'electric',
-        indianZone: 'national-average',
-        flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0,
-        lpgCylindersPerYear: 0,
-        naturalGasThermsPerMonth: 0,
-        dietType: 'average',
-        recyclingLevel: 'average',
-      });
-      const gasFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 300,
-        vehicleType: 'petrol',
-        indianZone: 'national-average',
-        flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0,
-        lpgCylindersPerYear: 0,
-        naturalGasThermsPerMonth: 0,
-        dietType: 'average',
-        recyclingLevel: 'average',
-      });
-
-      if (evFootprint.totalCO2eKg < gasFootprint.totalCO2eKg) {
-        tests.push({
-          name: 'Transport Calculation Check',
-          passed: true,
-          message: 'EV emits less than gasoline over same distance.',
-        });
-      } else {
-        tests.push({
-          name: 'Transport Calculation Check',
-          passed: false,
-          message: 'EV emitted more or equal to gasoline.',
-        });
-      }
-    } catch (e: unknown) {
-      tests.push({
-        name: 'Runtime Check',
-        passed: false,
-        message: e instanceof Error ? e.message : 'Unknown error',
-      });
-    }
-
-    setResults(tests);
+    runTests();
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (

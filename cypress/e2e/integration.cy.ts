@@ -16,14 +16,6 @@ describe('Integration Baseline', () => {
     // it will use the Emulator's fake sign-in flow. 
     // For a headless test, mocking the window auth object is better.
     
-    cy.window().then((win) => {
-      // Mock the AuthContext state directly or trigger login
-      // Since the context is inside React, we will intercept the Firebase Auth REST API
-      // But a simpler approach for the emulator is to just simulate the button click
-      // The Firebase Auth Emulator automatically handles the popup by showing an auto-login screen.
-      // We will mock the auth state directly in Cypress for reliability
-    });
-
     // We can also just check that the login button exists and intercept the auth state
     cy.contains('Sign In with Google').should('exist');
     
@@ -49,9 +41,10 @@ describe('Integration Baseline', () => {
 
     // Simulate Network Failure
     cy.log('Simulating offline mode using Firestore disableNetwork...');
-    cy.window().then(async (win: any) => {
-      if (win.db && win.disableNetwork) {
-        await win.disableNetwork(win.db);
+    cy.window().then(async (win) => {
+      const customWin = win as Window & { db?: unknown; disableNetwork?: (db: unknown) => Promise<void> };
+      if (customWin.db && customWin.disableNetwork) {
+        await customWin.disableNetwork(customWin.db);
       }
     });
     
@@ -67,9 +60,10 @@ describe('Integration Baseline', () => {
     
     // Restore Network
     cy.log('Restoring online mode...');
-    cy.window().then(async (win: any) => {
-      if (win.db && win.enableNetwork) {
-        await win.enableNetwork(win.db);
+    cy.window().then(async (win) => {
+      const customWin = win as Window & { db?: unknown; enableNetwork?: (db: unknown) => Promise<void> };
+      if (customWin.db && customWin.enableNetwork) {
+        await customWin.enableNetwork(customWin.db);
       }
     });
     

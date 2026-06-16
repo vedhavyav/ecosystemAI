@@ -32,13 +32,10 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!auth);
 
   useEffect(() => {
-    if (!auth) {
-      setLoading(false);
-      return;
-    }
+    if (!auth) return;
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -50,10 +47,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signInWithGoogle = async () => {
     if (!auth) return;
-    
+
     if (typeof window !== 'undefined' && window.Cypress) {
       // Mock Google sign in for Cypress by creating/signing in a test user
-      const { signInWithEmailAndPassword, createUserWithEmailAndPassword } = await import('firebase/auth');
+      const { signInWithEmailAndPassword, createUserWithEmailAndPassword } =
+        await import('firebase/auth');
       try {
         await signInWithEmailAndPassword(auth, 'test@example.com', 'password123');
       } catch (e: unknown) {

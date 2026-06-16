@@ -30,9 +30,18 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const res = calculateFootprint(inputs);
-    setResult(res);
-    setRecommendations(generateRecommendations(inputs, res));
+    let active = true;
+    const fetchData = async () => {
+      const res = await calculateFootprint(inputs);
+      if (active) {
+        setResult(res);
+        setRecommendations(generateRecommendations(inputs, res));
+      }
+    };
+    fetchData();
+    return () => {
+      active = false;
+    };
   }, [inputs]);
 
   const handleSaveToProfile = async () => {

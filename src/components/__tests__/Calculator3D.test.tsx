@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Calculator3D from '../Calculator3D';
 
@@ -7,9 +7,12 @@ jest.mock('framer-motion', () => {
   const React = require('react');
   return {
     motion: {
-      div: ({ children, ...rest }: Record<string, unknown>) => React.createElement('div', rest, children),
-      span: ({ children, ...rest }: Record<string, unknown>) => React.createElement('span', rest, children),
-      circle: ({ children, ...rest }: Record<string, unknown>) => React.createElement('circle', rest, children),
+      div: ({ children, ...rest }: Record<string, unknown>) =>
+        React.createElement('div', rest, children),
+      span: ({ children, ...rest }: Record<string, unknown>) =>
+        React.createElement('span', rest, children),
+      circle: ({ children, ...rest }: Record<string, unknown>) =>
+        React.createElement('circle', rest, children),
     },
     AnimatePresence: ({ children }: Record<string, unknown>) => children,
     useReducedMotion: () => true,

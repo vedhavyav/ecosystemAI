@@ -9,10 +9,11 @@ import { useAuth } from '@/lib/firebase/authContext';
 export function Navigation() {
   const { user, loading, signInWithGoogle, signOut } = useAuth();
 
-  const [isB2B, setIsB2B] = useState(false);
+  const [isB2B, setIsB2B] = useState(() => {
+    return typeof window !== 'undefined' ? localStorage.getItem('userRole') === 'b2b' : false;
+  });
 
   useEffect(() => {
-    setIsB2B(localStorage.getItem('userRole') === 'b2b');
     const handleRole = () => setIsB2B(localStorage.getItem('userRole') === 'b2b');
     window.addEventListener('role_updated', handleRole);
     return () => window.removeEventListener('role_updated', handleRole);

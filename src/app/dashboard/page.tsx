@@ -16,7 +16,11 @@ export default function DashboardPage() {
   }, [user, loading, router]);
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-[#022c22] flex items-center justify-center"><p className="text-white">Loading...</p></div>;
+    return (
+      <div className="min-h-screen bg-[#022c22] flex items-center justify-center">
+        <p className="text-white">Loading...</p>
+      </div>
+    );
   }
 
   return <DashboardClient userFirstName={user.displayName || 'User'} />;

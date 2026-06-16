@@ -11,7 +11,8 @@ type Props = {
 
 export default function WhatIfSimulator({ inputs, setInputs }: Props) {
   const reduceDriving = () => {
-    const currentKm = typeof inputs.kilometersDrivenPerWeek === 'number' ? inputs.kilometersDrivenPerWeek : 0;
+    const currentKm =
+      typeof inputs.kilometersDrivenPerWeek === 'number' ? inputs.kilometersDrivenPerWeek : 0;
     setInputs({ ...inputs, kilometersDrivenPerWeek: Math.max(0, currentKm - 50) });
   };
 
@@ -31,10 +32,13 @@ export default function WhatIfSimulator({ inputs, setInputs }: Props) {
         </div>
         <h2 className="text-5xl font-light text-white">Simulator</h2>
       </div>
-      <p className="text-emerald-100/70 mb-12 font-light text-xl text-center max-w-xl">Trigger instant impact scenarios and see how your score adapts in real-time as you make changes.</p>
+      <p className="text-emerald-100/70 mb-12 font-light text-xl text-center max-w-xl">
+        Trigger instant impact scenarios and see how your score adapts in real-time as you make
+        changes.
+      </p>
 
       <div className="flex flex-col md:flex-row flex-wrap justify-center gap-6 w-full">
-        <LiquidButton 
+        <LiquidButton
           variant="default"
           onClick={reduceDriving}
           className="flex-1 min-w-[250px] text-center py-8 text-xl font-bold tracking-wide text-white bg-white/10 border border-emerald-500/30 hover:bg-emerald-500/20"
@@ -42,7 +46,7 @@ export default function WhatIfSimulator({ inputs, setInputs }: Props) {
           Reduce Driving By 50 Km
         </LiquidButton>
 
-        <LiquidButton 
+        <LiquidButton
           variant="default"
           onClick={switchDiet}
           className="flex-1 min-w-[250px] text-center py-8 text-xl font-bold tracking-wide text-white bg-white/10 border border-emerald-500/30 hover:bg-emerald-500/20"
@@ -50,7 +54,7 @@ export default function WhatIfSimulator({ inputs, setInputs }: Props) {
           Go Vegetarian
         </LiquidButton>
 
-        <LiquidButton 
+        <LiquidButton
           variant="default"
           onClick={boostRecycling}
           className="flex-1 min-w-[250px] text-center py-8 text-xl font-bold tracking-wide text-white bg-white/10 border border-emerald-500/30 hover:bg-emerald-500/20"

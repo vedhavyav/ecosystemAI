@@ -8,64 +8,79 @@ export type Recommendation = {
   difficulty: 'Easy' | 'Medium' | 'Hard';
 };
 
-export function generateRecommendations(inputs: UserInputs, result: FootprintResult): Recommendation[] {
-  const getNum = (val: number | '') => val === '' ? 0 : val;
+/**
+ * Generates an array of tailored, actionable sustainability recommendations based on user footprint results.
+ *
+ * @param {UserInputs} inputs - The user's input data for lifestyle activities.
+ * @param {FootprintResult} result - The calculated carbon footprint results.
+ * @returns {Recommendation[]} A sorted array of personalized recommendations.
+ */
+export function generateRecommendations(
+  inputs: UserInputs,
+  result: FootprintResult
+): Recommendation[] {
+  const getNum = (val: number | '') => (val === '' ? 0 : val);
   const recs: Recommendation[] = [];
 
   // 1. Dynamic AI Context Nudge (LLM Mock)
-  const aiNudge = generateLocalizedAINudge(inputs, result);
+  const aiNudge = generateLocalizedAINudge(inputs);
   recs.push({
     title: 'AI Contextual Insight',
     description: aiNudge,
     impactScore: 10,
-    difficulty: 'Medium'
+    difficulty: 'Medium',
   });
 
   // Identify highest category
   const cats = result.categories;
-  
+
   if (inputs.vehicleType === 'petrol' && cats.transportation > 1500) {
     recs.push({
       title: 'Transition to an Electric Vehicle (EV)',
-      description: 'Transportation is a major portion of your footprint. Switching to an EV could cut these emissions significantly over time.',
+      description:
+        'Transportation is a major portion of your footprint. Switching to an EV could cut these emissions significantly over time.',
       impactScore: 9,
-      difficulty: 'Hard'
+      difficulty: 'Hard',
     });
   }
 
   if (getNum(inputs.flightHoursPerYear) > 10) {
     recs.push({
       title: 'Reduce Air Travel',
-      description: 'Flights contribute massively to carbon emissions. Consider taking trains for regional trips or utilizing virtual meetings.',
+      description:
+        'Flights contribute massively to carbon emissions. Consider taking trains for regional trips or utilizing virtual meetings.',
       impactScore: 8,
-      difficulty: 'Medium'
+      difficulty: 'Medium',
     });
   }
 
   if (inputs.dietType === 'meatHeavy' || inputs.dietType === 'average') {
     recs.push({
       title: 'Shift Toward a Plant-Based Diet',
-      description: 'Incorporating more meat-free days into your week can reduce your dietary carbon footprint by up to 30%.',
+      description:
+        'Incorporating more meat-free days into your week can reduce your dietary carbon footprint by up to 30%.',
       impactScore: 7,
-      difficulty: 'Medium'
+      difficulty: 'Medium',
     });
   }
 
   if (getNum(inputs.electricityKWhPerMonth) > 600) {
     recs.push({
       title: 'Adopt Renewable Energy',
-      description: 'Your home energy usage is high. Opt into a green energy program with your utility provider or explore solar options.',
+      description:
+        'Your home energy usage is high. Opt into a green energy program with your utility provider or explore solar options.',
       impactScore: 8,
-      difficulty: 'Hard'
+      difficulty: 'Hard',
     });
   }
 
   if (inputs.recyclingLevel === 'low') {
     recs.push({
       title: 'Improve Household Recycling',
-      description: 'Properly sorting waste and participating in local recycling programs can easily offset some of your footprint.',
+      description:
+        'Properly sorting waste and participating in local recycling programs can easily offset some of your footprint.',
       impactScore: 4,
-      difficulty: 'Easy'
+      difficulty: 'Easy',
     });
   }
 

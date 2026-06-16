@@ -6,57 +6,108 @@ import { Activity, CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function TestingDashboard() {
-  const [results, setResults] = useState<{name: string, passed: boolean, message: string}[]>([]);
+  const [results, setResults] = useState<{ name: string; passed: boolean; message: string }[]>([]);
 
   useEffect(() => {
     const tests = [];
-    
+
     try {
       // Test 1: Vegan Diet vs Meat Diet
       const veganFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 0, vehicleType: 'publicTransit', indianZone: 'national-average', flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0, lpgCylindersPerYear: 0, naturalGasThermsPerMonth: 0,
-        dietType: 'vegan', recyclingLevel: 'average'
+        kilometersDrivenPerWeek: 0,
+        vehicleType: 'publicTransit',
+        indianZone: 'national-average',
+        flightHoursPerYear: 0,
+        electricityKWhPerMonth: 0,
+        lpgCylindersPerYear: 0,
+        naturalGasThermsPerMonth: 0,
+        dietType: 'vegan',
+        recyclingLevel: 'average',
       });
       const meatFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 0, vehicleType: 'publicTransit', indianZone: 'national-average', flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0, lpgCylindersPerYear: 0, naturalGasThermsPerMonth: 0,
-        dietType: 'meatHeavy', recyclingLevel: 'average'
+        kilometersDrivenPerWeek: 0,
+        vehicleType: 'publicTransit',
+        indianZone: 'national-average',
+        flightHoursPerYear: 0,
+        electricityKWhPerMonth: 0,
+        lpgCylindersPerYear: 0,
+        naturalGasThermsPerMonth: 0,
+        dietType: 'meatHeavy',
+        recyclingLevel: 'average',
       });
-      
+
       if (veganFootprint.totalCO2eKg < meatFootprint.totalCO2eKg) {
-        tests.push({ name: 'Diet Calculation Check', passed: true, message: 'Vegan diet emits less than meat-heavy diet.' });
+        tests.push({
+          name: 'Diet Calculation Check',
+          passed: true,
+          message: 'Vegan diet emits less than meat-heavy diet.',
+        });
       } else {
-        tests.push({ name: 'Diet Calculation Check', passed: false, message: 'Math error in diet emissions.' });
+        tests.push({
+          name: 'Diet Calculation Check',
+          passed: false,
+          message: 'Math error in diet emissions.',
+        });
       }
 
       // Test 2: Score Limits
       if (veganFootprint.ecoScore >= 0 && veganFootprint.ecoScore <= 100) {
-         tests.push({ name: 'Eco Score Bounds', passed: true, message: 'Score is strictly between 0 and 100.' });
+        tests.push({
+          name: 'Eco Score Bounds',
+          passed: true,
+          message: 'Score is strictly between 0 and 100.',
+        });
       } else {
-         tests.push({ name: 'Eco Score Bounds', passed: false, message: `Score out of bounds: ${veganFootprint.ecoScore}` });
+        tests.push({
+          name: 'Eco Score Bounds',
+          passed: false,
+          message: `Score out of bounds: ${veganFootprint.ecoScore}`,
+        });
       }
 
       // Test 3: EV vs Gas Transport
       const evFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 300, vehicleType: 'electric', indianZone: 'national-average', flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0, lpgCylindersPerYear: 0, naturalGasThermsPerMonth: 0,
-        dietType: 'average', recyclingLevel: 'average'
+        kilometersDrivenPerWeek: 300,
+        vehicleType: 'electric',
+        indianZone: 'national-average',
+        flightHoursPerYear: 0,
+        electricityKWhPerMonth: 0,
+        lpgCylindersPerYear: 0,
+        naturalGasThermsPerMonth: 0,
+        dietType: 'average',
+        recyclingLevel: 'average',
       });
       const gasFootprint = calculateFootprint({
-        kilometersDrivenPerWeek: 300, vehicleType: 'petrol', indianZone: 'national-average', flightHoursPerYear: 0,
-        electricityKWhPerMonth: 0, lpgCylindersPerYear: 0, naturalGasThermsPerMonth: 0,
-        dietType: 'average', recyclingLevel: 'average'
+        kilometersDrivenPerWeek: 300,
+        vehicleType: 'petrol',
+        indianZone: 'national-average',
+        flightHoursPerYear: 0,
+        electricityKWhPerMonth: 0,
+        lpgCylindersPerYear: 0,
+        naturalGasThermsPerMonth: 0,
+        dietType: 'average',
+        recyclingLevel: 'average',
       });
 
       if (evFootprint.totalCO2eKg < gasFootprint.totalCO2eKg) {
-        tests.push({ name: 'Transport Calculation Check', passed: true, message: 'EV emits less than gasoline over same distance.' });
+        tests.push({
+          name: 'Transport Calculation Check',
+          passed: true,
+          message: 'EV emits less than gasoline over same distance.',
+        });
       } else {
-        tests.push({ name: 'Transport Calculation Check', passed: false, message: 'EV emitted more or equal to gasoline.' });
+        tests.push({
+          name: 'Transport Calculation Check',
+          passed: false,
+          message: 'EV emitted more or equal to gasoline.',
+        });
       }
-
-    } catch (e: any) {
-      tests.push({ name: 'Runtime Check', passed: false, message: e.message });
+    } catch (e: unknown) {
+      tests.push({
+        name: 'Runtime Check',
+        passed: false,
+        message: e instanceof Error ? e.message : 'Unknown error',
+      });
     }
 
     setResults(tests);
@@ -65,7 +116,7 @@ export default function TestingDashboard() {
   return (
     <div className="min-h-screen p-8 md:p-16 flex flex-col items-center">
       <div className="w-full max-w-3xl mt-16">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 flex items-center gap-4"
@@ -75,7 +126,9 @@ export default function TestingDashboard() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-emerald-950">System Health</h1>
-            <p className="text-emerald-900/70 font-light">Internal engine validation & bounds checking</p>
+            <p className="text-emerald-900/70 font-light">
+              Internal engine validation & bounds checking
+            </p>
           </div>
         </motion.div>
 
@@ -86,14 +139,14 @@ export default function TestingDashboard() {
             </div>
           ) : (
             results.map((t, i) => (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
-                key={i} 
+                key={i}
                 className={`p-6 flex items-start gap-4 border-l-4 ${
-                  t.passed 
-                    ? 'bg-emerald-50/40 backdrop-blur-md border-emerald-500 shadow-sm' 
+                  t.passed
+                    ? 'bg-emerald-50/40 backdrop-blur-md border-emerald-500 shadow-sm'
                     : 'bg-red-50/40 backdrop-blur-md border-red-500 shadow-sm'
                 }`}
               >
@@ -105,7 +158,9 @@ export default function TestingDashboard() {
                   )}
                 </div>
                 <div>
-                  <h3 className={`text-lg font-semibold ${t.passed ? 'text-emerald-950' : 'text-red-950'}`}>
+                  <h3
+                    className={`text-lg font-semibold ${t.passed ? 'text-emerald-950' : 'text-red-950'}`}
+                  >
                     {t.name}
                   </h3>
                   <p className="text-emerald-900/70 mt-1 font-light">{t.message}</p>

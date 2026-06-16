@@ -1,0 +1,6 @@
+{
+  "extends": ["next/core-web-vitals", "google", "prettier"],
+  "rules": {
+    "react-hooks/set-state-in-effect": "off"
+  }
+}

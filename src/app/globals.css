@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --font-sans: var(--font-geist-sans);
@@ -8,8 +8,8 @@
 :root {
   --background: #059669; /* Emerald */
   --foreground: #022c22;
-  --primary: #059669; 
-  --secondary: #6EE7B7; 
+  --primary: #059669;
+  --secondary: #6ee7b7;
 }
 
 body {
@@ -18,8 +18,8 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
   /* Mix emerald green and soft mint */
-  background-image: 
-    radial-gradient(circle at 15% 10%, #6EE7B7, transparent 70%),
+  background-image:
+    radial-gradient(circle at 15% 10%, #6ee7b7, transparent 70%),
     radial-gradient(circle at 85% 85%, #059669, transparent 70%),
     linear-gradient(135deg, #a7f3d0, #10b981);
   background-attachment: fixed;
@@ -27,12 +27,18 @@ body {
 
 /* Animations */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes ping {
-  75%, 100% {
+  75%,
+  100% {
     transform: scale(2);
     opacity: 0;
   }
@@ -57,7 +63,7 @@ body {
   width: 28px;
   height: 28px;
   background: #022c22;
-  border: 3px solid #6EE7B7;
+  border: 3px solid #6ee7b7;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -68,14 +74,30 @@ body {
   transform: scale(1.15);
 }
 
-.duration-300 { transition-duration: 300ms; }
-.duration-700 { transition-duration: 700ms; }
-.duration-1000 { transition-duration: 1000ms; }
+.duration-300 {
+  transition-duration: 300ms;
+}
+.duration-700 {
+  transition-duration: 700ms;
+}
+.duration-1000 {
+  transition-duration: 1000ms;
+}
 
-.backdrop-blur-lg { backdrop-filter: blur(16px); }
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+}
 
-.z-10 { z-index: 10; }
-.z-50 { z-index: 50; }
+.z-10 {
+  z-index: 10;
+}
+.z-50 {
+  z-index: 50;
+}
 
-.scale-125 { transform: scale(1.25); }
-.scale-150 { transform: scale(1.5); }
+.scale-125 {
+  transform: scale(1.25);
+}
+.scale-150 {
+  transform: scale(1.5);
+}

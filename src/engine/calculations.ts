@@ -3,7 +3,13 @@ import { emissionFactors } from '../config/emissionFactors';
 export type UserInputs = {
   kilometersDrivenPerWeek: number | '';
   vehicleType: 'petrol' | 'diesel' | 'twoWheeler' | 'electric' | 'publicTransit';
-  indianZone: 'southern' | 'northern' | 'western' | 'eastern' | 'north-eastern' | 'national-average';
+  indianZone:
+    | 'southern'
+    | 'northern'
+    | 'western'
+    | 'eastern'
+    | 'north-eastern'
+    | 'national-average';
   flightHoursPerYear: number | '';
   electricityKWhPerMonth: number | '';
   naturalGasThermsPerMonth: number | '';
@@ -25,29 +31,52 @@ export type FootprintResult = {
   level: string;
 };
 
+/**
+ * Calculates the total carbon footprint and categorizes it based on user inputs.
+ *
+ * @param {UserInputs} inputs - The specific lifestyle data inputs provided by the user.
+ * @returns {FootprintResult} An object containing total emissions, categorized emissions,
+ *                            and an eco-score out of 100 with an associated level.
+ */
 export function calculateFootprint(inputs: UserInputs): FootprintResult {
-  const parseNum = (val: number | '') => val === '' ? 0 : Number(val);
+  const parseNum = (val: number | '') => (val === '' ? 0 : Number(val));
 
   // Transportation (factors are now strictly per km)
   const kmDriven = parseNum(inputs.kilometersDrivenPerWeek);
   let transportPerWeek = 0;
-  
-  switch(inputs.vehicleType) {
-    case 'petrol': transportPerWeek = kmDriven * emissionFactors.transportation.petrolCarPerKm; break;
-    case 'diesel': transportPerWeek = kmDriven * emissionFactors.transportation.dieselCarPerKm; break;
-    case 'twoWheeler': transportPerWeek = kmDriven * emissionFactors.transportation.twoWheelerPerKm; break;
-    case 'electric': transportPerWeek = kmDriven * emissionFactors.transportation.electricCarPerKm; break;
-    case 'publicTransit': transportPerWeek = kmDriven * emissionFactors.transportation.publicTransitPerKm; break;
-    default: transportPerWeek = kmDriven * emissionFactors.transportation.petrolCarPerKm; // fallback
+
+  switch (inputs.vehicleType) {
+    case 'petrol':
+      transportPerWeek = kmDriven * emissionFactors.transportation.petrolCarPerKm;
+      break;
+    case 'diesel':
+      transportPerWeek = kmDriven * emissionFactors.transportation.dieselCarPerKm;
+      break;
+    case 'twoWheeler':
+      transportPerWeek = kmDriven * emissionFactors.transportation.twoWheelerPerKm;
+      break;
+    case 'electric':
+      transportPerWeek = kmDriven * emissionFactors.transportation.electricCarPerKm;
+      break;
+    case 'publicTransit':
+      transportPerWeek = kmDriven * emissionFactors.transportation.publicTransitPerKm;
+      break;
+    default:
+      transportPerWeek = kmDriven * emissionFactors.transportation.petrolCarPerKm; // fallback
   }
-  
-  const transportAnnual = (transportPerWeek * 52) + (parseNum(inputs.flightHoursPerYear) * emissionFactors.transportation.flightPerHour);
+
+  const transportAnnual =
+    transportPerWeek * 52 +
+    parseNum(inputs.flightHoursPerYear) * emissionFactors.transportation.flightPerHour;
 
   // Home Energy (CEA localized grid factors)
-  const gridFactor = emissionFactors.homeEnergy.electricityByGrid[inputs.indianZone || 'national-average'] || emissionFactors.homeEnergy.electricityByGrid['national-average'];
-  const energyAnnual = (parseNum(inputs.electricityKWhPerMonth) * 12 * gridFactor) + 
-                       (parseNum(inputs.naturalGasThermsPerMonth) * 12 * emissionFactors.homeEnergy.naturalGasPerTherm) +
-                       (parseNum(inputs.lpgCylindersPerYear) * emissionFactors.homeEnergy.lpgCylinder);
+  const gridFactor =
+    emissionFactors.homeEnergy.electricityByGrid[inputs.indianZone || 'national-average'] ||
+    emissionFactors.homeEnergy.electricityByGrid['national-average'];
+  const energyAnnual =
+    parseNum(inputs.electricityKWhPerMonth) * 12 * gridFactor +
+    parseNum(inputs.naturalGasThermsPerMonth) * 12 * emissionFactors.homeEnergy.naturalGasPerTherm +
+    parseNum(inputs.lpgCylindersPerYear) * emissionFactors.homeEnergy.lpgCylinder;
 
   // Diet
   let dietAnnual = 0;

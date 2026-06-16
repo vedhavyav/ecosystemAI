@@ -4,7 +4,16 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Basic rules - only authenticated users can read/write their own data
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null 
+                            && request.auth.uid == userId
+                            && request.resource.data.keys().hasAll(['email', 'displayName', 'role'])
+                            && (request.resource.data.role == 'individual' || request.resource.data.role == 'b2b');
+    }
+    
+    match /footprints/{footprintId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow write: if request.auth != null && request.resource.data.userId == request.auth.uid;
     }
   }
 }

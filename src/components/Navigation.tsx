@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { Home, LineChart, LogIn, User, LogOut } from "lucide-react";
-import { NavBar } from "@/components/ui/tubelight-navbar";
-import { useAuth } from "@/lib/firebase/authContext";
+import { Home, LineChart, LogIn, User, LogOut } from 'lucide-react';
+import { NavBar, NavItem } from '@/components/ui/tubelight-navbar';
+import { useAuth } from '@/lib/firebase/authContext';
 
 export function Navigation() {
   const { user, loading, signInWithGoogle, signOut } = useAuth();
@@ -18,7 +18,7 @@ export function Navigation() {
     return () => window.removeEventListener('role_updated', handleRole);
   }, []);
 
-  const navItems: any[] = [
+  const navItems: NavItem[] = [
     { name: 'Home', url: '/', icon: Home },
     { name: 'System Tests', url: '/tests', icon: LineChart },
   ];
@@ -30,22 +30,23 @@ export function Navigation() {
       navItems.unshift({ name: 'Corporate ESG', url: '/admin', icon: Home });
     }
     navItems.unshift({ name: 'My Dashboard', url: '/dashboard', icon: Home });
-    navItems.push({ 
-      name: 'Sign Out', 
-      url: '#', 
+    navItems.push({ name: 'Profile', url: '/profile', icon: User });
+    navItems.push({
+      name: 'Sign Out',
+      url: '#',
       icon: LogOut,
       action: async () => {
         if (window.confirm('Are you sure you want to sign out?')) {
           await signOut();
         }
-      }
+      },
     });
   } else {
-    navItems.push({ 
-      name: 'Sign In with Google', 
-      url: '#', 
+    navItems.push({
+      name: 'Sign In with Google',
+      url: '#',
       icon: LogIn,
-      action: async () => await signInWithGoogle()
+      action: async () => await signInWithGoogle(),
     });
   }
 

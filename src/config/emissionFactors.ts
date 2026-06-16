@@ -2,10 +2,10 @@
 export const emissionFactors = {
   // Transportation (kg CO2e per km) based on ARAI / MoRTH data
   transportation: {
-    petrolCarPerKm: 0.140, // Indian average petrol hatchback/sedan
-    dieselCarPerKm: 0.170, // Indian average diesel
-    twoWheelerPerKm: 0.040, // ARAI average for 100cc-150cc scooters/bikes
-    electricCarPerKm: 0.090, // EV charged on Indian grid (average)
+    petrolCarPerKm: 0.14, // Indian average petrol hatchback/sedan
+    dieselCarPerKm: 0.17, // Indian average diesel
+    twoWheelerPerKm: 0.04, // ARAI average for 100cc-150cc scooters/bikes
+    electricCarPerKm: 0.09, // EV charged on Indian grid (average)
     publicTransitPerKm: 0.035, // BEST Bus / Delhi Metro average per passenger
     flightPerHour: 90.0, // Domestic flight average (e.g. Indigo/AirIndia)
   },
@@ -13,11 +13,11 @@ export const emissionFactors = {
   homeEnergy: {
     // CEA Grid Emission Factors (kg CO2 / kWh)
     electricityByGrid: {
-      'southern': 0.71, // Southern Grid (Tamil Nadu, Karnataka, etc.)
-      'northern': 0.75, // Northern Grid
-      'western': 0.80,  // Western Grid (highest coal mix)
-      'eastern': 0.82,  // Eastern Grid
-      'north-eastern': 0.50, // Hydro-heavy
+      southern: 0.71, // Southern Grid (Tamil Nadu, Karnataka, etc.)
+      northern: 0.75, // Northern Grid
+      western: 0.8, // Western Grid (highest coal mix)
+      eastern: 0.82, // Eastern Grid
+      'north-eastern': 0.5, // Hydro-heavy
       'national-average': 0.71,
     },
     naturalGasPerTherm: 5.302, // Piped Natural Gas (PNG) average
@@ -35,5 +35,5 @@ export const emissionFactors = {
     highRecycling: 100, // Kabadiwala / source segregation
     average: 350, // Mixed disposal
     lowRecycling: 700, // Open burning / dumping
-  }
+  },
 };

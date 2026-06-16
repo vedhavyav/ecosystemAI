@@ -16,7 +16,11 @@ export default function AdminPage() {
   }, [user, loading, router]);
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-black flex items-center justify-center"><p className="text-white">Loading...</p></div>;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <p className="text-white">Loading...</p>
+      </div>
+    );
   }
 
   return <AdminClient />;

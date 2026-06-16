@@ -1,12 +1,12 @@
-import { UserInputs, FootprintResult } from './calculations';
+import { UserInputs } from './calculations';
 
 /**
  * A sophisticated Mock LLM Orchestrator that generates hyper-personalized, 
  * localized Indian nudges based on user inputs. It mimics what an LLM with RAG
  * over a local infrastructure database would output.
  */
-export function generateLocalizedAINudge(inputs: UserInputs, result: FootprintResult): string {
-  const getNum = (val: number | '') => val === '' ? 0 : val;
+export function generateLocalizedAINudge(inputs: UserInputs): string {
+  const getNum = (val: number | '') => (val === '' ? 0 : val);
   
   // Example 1: Localized Transit based on Zone
   if (inputs.vehicleType !== 'publicTransit' && getNum(inputs.kilometersDrivenPerWeek) > 50) {

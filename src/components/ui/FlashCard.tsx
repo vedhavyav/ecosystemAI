@@ -14,7 +14,7 @@ export default function FlashCard({ problem, solution, difficulty }: Props) {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <div 
+    <div
       className="relative w-full h-[250px] cursor-pointer perspective-1000"
       onClick={() => setIsFlipped(!isFlipped)}
     >
@@ -26,7 +26,7 @@ export default function FlashCard({ problem, solution, difficulty }: Props) {
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Front (Problem) */}
-        <div 
+        <div
           className="absolute inset-0 backface-hidden bg-[#111] border border-red-500/20 rounded-3xl p-6 md:p-8 flex flex-col justify-center items-center text-center shadow-lg hover:border-red-500/40 transition-colors"
           style={{ backfaceVisibility: 'hidden' }}
         >
@@ -35,11 +35,13 @@ export default function FlashCard({ problem, solution, difficulty }: Props) {
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-white mb-2">The Problem</h3>
           <p className="text-white/70">{problem}</p>
-          <p className="text-white/30 text-sm mt-6 font-medium tracking-widest uppercase">Click to flip</p>
+          <p className="text-white/30 text-sm mt-6 font-medium tracking-widest uppercase">
+            Click to flip
+          </p>
         </div>
 
         {/* Back (Solution) */}
-        <div 
+        <div
           className="absolute inset-0 backface-hidden bg-emerald-950 border border-emerald-500/30 rounded-3xl p-6 md:p-8 flex flex-col justify-center items-center text-center shadow-lg hover:border-emerald-500/50 transition-colors"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >

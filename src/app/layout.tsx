@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Navigation } from '@/components/Navigation';
@@ -16,6 +16,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Ecosystem AI',
   description: 'Understand and optimize your environmental footprint.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Ecosystem AI',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#10b981',
 };
 
 export default function RootLayout({

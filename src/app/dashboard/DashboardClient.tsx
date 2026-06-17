@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { UserInputs, calculateFootprint, FootprintResult } from '@/engine/calculations';
-import { generateRecommendations } from '@/engine/recommendations';
+import { UserInputs } from '@/engine/calculations';
+import { useFootprintCalculation } from '@/hooks/useFootprintCalculation';
 import Calculator3D from '@/components/Calculator3D';
 import EcoScoreDisplay from '@/components/EcoScoreDisplay';
 import { FootprintHistory } from '@/components/FootprintHistory';
@@ -43,7 +43,7 @@ export default function DashboardClient({ userFirstName }: Props) {
     return false;
   });
 
-  const [result, setResult] = useState<FootprintResult | null>(null);
+  const { result, recommendations } = useFootprintCalculation(inputs);
 
   const [points, setPoints] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -55,16 +55,6 @@ export default function DashboardClient({ userFirstName }: Props) {
 
   const router = useRouter();
   const { user } = useAuth();
-
-  useEffect(() => {
-    let active = true;
-    calculateFootprint(inputs).then((res) => {
-      if (active) setResult(res);
-    });
-    return () => {
-      active = false;
-    };
-  }, [inputs]);
 
   const handleSelectRole = (role: 'individual' | 'b2b') => {
     localStorage.setItem('userRole', role);
@@ -214,7 +204,7 @@ export default function DashboardClient({ userFirstName }: Props) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {result ? (
-              generateRecommendations(inputs, result).map((rec, i) => (
+              recommendations.map((rec, i) => (
                 <FlashCard
                   key={i}
                   problem={rec.description}

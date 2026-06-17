@@ -2,7 +2,7 @@
 
 import { UserInputs } from '@/engine/calculations';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Car, Zap, Utensils, Recycle } from 'lucide-react';
 import { TubelightTabs } from './ui/tubelight-tabs';
 
@@ -18,7 +18,7 @@ const tabs = [
   { id: 'waste', label: 'Waste', icon: Recycle },
 ];
 
-export default function Calculator3D({ inputs, setInputs }: Props) {
+const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Props) {
   const [activeTab, setActiveTab] = useState(tabs[0].id);
   const shouldReduceMotion = useReducedMotion();
 
@@ -52,7 +52,10 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
             {activeTab === 'transport' && (
               <>
                 <div>
-                  <label htmlFor="input-kilometers" className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
+                  <label
+                    htmlFor="input-kilometers"
+                    className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                  >
                     Kilometers Driven Per Week
                   </label>
                   <div className="relative">
@@ -92,7 +95,9 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
                         key={type.id}
                         aria-pressed={inputs.vehicleType === type.id}
                         aria-label={`Select vehicle type: ${type.label}`}
-                        onClick={() => updateInput('vehicleType', type.id as UserInputs['vehicleType'])}
+                        onClick={() =>
+                          updateInput('vehicleType', type.id as UserInputs['vehicleType'])
+                        }
                         className={`p-4 font-black text-sm md:text-base capitalize transition-all text-center rounded-full border-2 ${
                           inputs.vehicleType === type.id
                             ? 'border-emerald-600 text-emerald-950 bg-white/80 shadow-md transform scale-[1.02]'
@@ -105,7 +110,10 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="input-flight" className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
+                  <label
+                    htmlFor="input-flight"
+                    className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                  >
                     Flight Hours Per Year
                   </label>
                   <div className="relative">
@@ -135,14 +143,19 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
             {activeTab === 'energy' && (
               <>
                 <div>
-                  <label htmlFor="input-grid" className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
+                  <label
+                    htmlFor="input-grid"
+                    className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                  >
                     Indian Power Grid Zone
                   </label>
                   <select
                     id="input-grid"
                     aria-label="Indian Power Grid Zone"
                     value={inputs.indianZone}
-                    onChange={(e) => updateInput('indianZone', e.target.value as UserInputs['indianZone'])}
+                    onChange={(e) =>
+                      updateInput('indianZone', e.target.value as UserInputs['indianZone'])
+                    }
                     className="w-full bg-white/60 backdrop-blur-md border-2 border-white/80 rounded-full p-3 pl-6 text-black font-black text-lg shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/20 transition-all cursor-pointer appearance-none"
                     style={{
                       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23000000'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -161,7 +174,10 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="input-electricity" className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
+                    <label
+                      htmlFor="input-electricity"
+                      className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                    >
                       Electricity
                     </label>
                     <div className="relative">
@@ -186,7 +202,10 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
                     </div>
                   </div>
                   <div>
-                    <label htmlFor="input-lpg" className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
+                    <label
+                      htmlFor="input-lpg"
+                      className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                    >
                       LPG Cylinders
                     </label>
                     <div className="relative">
@@ -212,7 +231,10 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="input-gas" className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
+                  <label
+                    htmlFor="input-gas"
+                    className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                  >
                     Piped Natural Gas (Optional)
                   </label>
                   <div className="relative">
@@ -278,7 +300,9 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
                         key={type}
                         aria-pressed={inputs.recyclingLevel === type}
                         aria-label={`Select recycling level: ${type}`}
-                        onClick={() => updateInput('recyclingLevel', type as UserInputs['recyclingLevel'])}
+                        onClick={() =>
+                          updateInput('recyclingLevel', type as UserInputs['recyclingLevel'])
+                        }
                         className={`p-4 font-black text-lg capitalize transition-all text-center rounded-full border-2 ${
                           inputs.recyclingLevel === type
                             ? 'border-emerald-600 text-emerald-950 bg-white/80 shadow-md transform scale-[1.02]'
@@ -297,4 +321,6 @@ export default function Calculator3D({ inputs, setInputs }: Props) {
       </div>
     </div>
   );
-}
+});
+
+export default Calculator3D;

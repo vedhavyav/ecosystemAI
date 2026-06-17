@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { calculateFootprint, FootprintResult, UserInputs } from '@/engine/calculations';
-import { generateRecommendations, Recommendation } from '@/engine/recommendations';
+import { UserInputs } from '@/engine/calculations';
+import { useFootprintCalculation } from '@/hooks/useFootprintCalculation';
+import Image from 'next/image';
 import Calculator3D from '@/components/Calculator3D';
 import EcoScoreDisplay from '@/components/EcoScoreDisplay';
 import WhatIfSimulator from '@/components/WhatIfSimulator';
@@ -24,25 +25,9 @@ export default function Home() {
     recyclingLevel: 'average',
   });
 
-  const [result, setResult] = useState<FootprintResult | null>(null);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const { result, recommendations } = useFootprintCalculation(inputs);
   const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    const fetchData = async () => {
-      const res = await calculateFootprint(inputs);
-      if (active) {
-        setResult(res);
-        setRecommendations(generateRecommendations(inputs, res));
-      }
-    };
-    fetchData();
-    return () => {
-      active = false;
-    };
-  }, [inputs]);
 
   const handleSaveToProfile = async () => {
     if (!user || !result) return;
@@ -63,14 +48,17 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center overflow-x-hidden font-sans relative">
-      {/* Unsplash Nature Background Image */}
-      <div
-        className="fixed inset-0 pointer-events-none -z-50 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=2000&q=80')`,
-          opacity: 0.15,
-        }}
-      />
+      {/* Unsplash Nature Background Image via next/image */}
+      <div className="fixed inset-0 pointer-events-none -z-50 opacity-15">
+        <Image
+          src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=2000&q=80"
+          alt="Nature Background"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          priority={false}
+          unoptimized // Avoid hitting Cloudflare Image Optimization limits if not configured
+        />
+      </div>
 
       {/* Dynamic Dark Background Overlay */}
       <motion.div

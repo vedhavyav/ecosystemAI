@@ -3,6 +3,7 @@
 import { FootprintResult } from '@/engine/calculations';
 import { Recommendation } from '@/engine/recommendations';
 import { motion, useReducedMotion } from 'framer-motion';
+import React from 'react';
 import { Sparkles, Leaf, Zap, Globe, Recycle } from 'lucide-react';
 import RadialOrbitalTimeline, { TimelineItem } from './ui/radial-orbital-timeline';
 import { calculateSvgDashOffset } from '@/services/ui-math';
@@ -14,7 +15,7 @@ type Props = {
   showTimeline?: boolean;
 };
 
-export default function EcoScoreDisplay({
+const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
   result,
   recommendations = [],
   showScore = true,
@@ -56,7 +57,11 @@ export default function EcoScoreDisplay({
     <div className="space-y-12">
       {/* Score Section */}
       {showScore && (
-        <div className="flex flex-col items-center justify-center relative py-8" aria-live="polite" aria-atomic="true">
+        <div
+          className="flex flex-col items-center justify-center relative py-8"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-white/40 rounded-full blur-[80px] pointer-events-none -z-10" />
 
           <h2 className="text-black font-black mb-8 uppercase tracking-[0.3em] text-xs relative z-10 drop-shadow-sm">
@@ -153,4 +158,6 @@ export default function EcoScoreDisplay({
       )}
     </div>
   );
-}
+});
+
+export default EcoScoreDisplay;

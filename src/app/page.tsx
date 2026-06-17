@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Calculator3D from '@/components/Calculator3D';
 import EcoScoreDisplay from '@/components/EcoScoreDisplay';
 import WhatIfSimulator from '@/components/WhatIfSimulator';
+import { CommunityImpact } from '@/components/CommunityImpact';
 import { Leaf, Save } from 'lucide-react';
 import { useAuth } from '@/lib/firebase/authContext';
 import { saveFootprintRecord } from '@/lib/firebase/firestore';
@@ -96,6 +97,9 @@ export default function Home() {
           <div className="w-px h-12 bg-black rounded-full" />
         </motion.div>
       </section>
+
+      {/* SECTION 1.5: Community Impact */}
+      <CommunityImpact />
 
       {/* SECTION 2: Data & Score */}
       <section className="w-full min-h-screen max-w-[1400px] p-6 md:p-12 flex flex-col justify-center">

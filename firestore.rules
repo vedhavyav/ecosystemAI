@@ -5,15 +5,32 @@ service cloud.firestore {
     // Basic rules - only authenticated users can read/write their own data
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
-      allow create, update: if request.auth != null 
-                            && request.auth.uid == userId
-                            && request.resource.data.keys().hasAll(['email', 'displayName', 'role'])
-                            && (request.resource.data.role == 'individual' || request.resource.data.role == 'b2b');
+      allow create: if request.auth != null 
+                    && request.auth.uid == userId
+                    && request.resource.data.keys().hasAll(['email', 'displayName', 'role'])
+                    && (request.resource.data.role == 'individual' || request.resource.data.role == 'b2b');
+      allow update: if request.auth != null 
+                    && request.auth.uid == userId
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'role', 'lastLoginAt']);
     }
     
     match /footprints/{footprintId} {
       allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow write: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null 
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasAll(['userId', 'totalCO2eTons', 'timestamp'])
+                    && request.resource.data.totalCO2eTons is number;
+      allow update: if request.auth != null 
+                    && request.resource.data.userId == request.auth.uid
+                    && resource.data.userId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    match /community_stats/{statId} {
+      // Allow anyone (even unauthenticated) to read community aggregated stats
+      allow read: if true;
+      // Only cloud functions/admin can write community stats
+      allow write: if false;
     }
   }
 }

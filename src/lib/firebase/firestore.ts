@@ -1,9 +1,5 @@
 import { db } from './config';
-import {
-  doc,
-  setDoc,
-  getDoc,
-} from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { FootprintResult, UserInputs } from '@/engine/calculations';
 
 export type UserProfile = {
@@ -50,7 +46,7 @@ export const saveFootprintRecord = async (
 ) => {
   if (!db) return;
   const userRef = doc(db, 'users', userId);
-  
+
   const { arrayUnion } = await import('firebase/firestore');
   const newRecord = {
     id: crypto.randomUUID(),
@@ -61,9 +57,13 @@ export const saveFootprintRecord = async (
   };
 
   // We use setDoc with merge to ensure the document exists and arrayUnion works
-  await setDoc(userRef, {
-    footprints: arrayUnion(newRecord)
-  }, { merge: true });
+  await setDoc(
+    userRef,
+    {
+      footprints: arrayUnion(newRecord),
+    },
+    { merge: true }
+  );
 };
 
 // Get footprint history for a user directly from their document
@@ -71,7 +71,7 @@ export const getFootprintHistory = async (userId: string): Promise<FootprintReco
   if (!db) return [];
   const userRef = doc(db, 'users', userId);
   const snap = await getDoc(userRef);
-  
+
   if (snap.exists()) {
     const data = snap.data();
     if (data.footprints && Array.isArray(data.footprints)) {
@@ -83,4 +83,28 @@ export const getFootprintHistory = async (userId: string): Promise<FootprintReco
     }
   }
   return [];
+};
+
+export type CommunityStats = {
+  tonsSaved: number;
+  treesEquivalent: number;
+  activeUsers: number;
+};
+
+// Get aggregated community impact statistics
+export const getCommunityStats = async (): Promise<CommunityStats> => {
+  if (!db) return { tonsSaved: 1250, treesEquivalent: 50000, activeUsers: 340 };
+
+  try {
+    const statsRef = doc(db, 'community_stats', 'global');
+    const snap = await getDoc(statsRef);
+    if (snap.exists()) {
+      return snap.data() as CommunityStats;
+    }
+  } catch (error) {
+    console.error('Error fetching community stats:', error);
+  }
+
+  // Return placeholder stats if not available
+  return { tonsSaved: 1250, treesEquivalent: 50000, activeUsers: 340 };
 };

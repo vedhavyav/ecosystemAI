@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 export interface NavItem {
   name: string;
@@ -20,10 +21,14 @@ interface NavBarProps {
 
 export function NavBar({ items, className }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name);
+  const navRef = useRef<HTMLDivElement>(null);
 
+  // Note: Trapping focus on a persistent navbar will prevent keyboard users from accessing the main content.
+  // We are applying it as requested, but it is typically only used for modals.
+  useFocusTrap(navRef, true);
 
   return (
-    <div className={cn('fixed top-6 left-1/2 -translate-x-1/2 z-50', className)}>
+    <div ref={navRef} className={cn('fixed top-6 left-1/2 -translate-x-1/2 z-50', className)}>
       <nav
         className="flex items-center gap-3 bg-white/10 border border-emerald-500/20 backdrop-blur-xl py-1 px-1 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.1)]"
         aria-label="Main Navigation"

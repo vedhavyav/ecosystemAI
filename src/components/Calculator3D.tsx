@@ -2,7 +2,7 @@
 
 import { UserInputs } from '@/engine/calculations';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Car, Zap, Utensils, Recycle } from 'lucide-react';
 import { TubelightTabs } from './ui/tubelight-tabs';
 
@@ -22,12 +22,29 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
   const [activeTab, setActiveTab] = useState(tabs[0].id);
   const shouldReduceMotion = useReducedMotion();
 
-  const updateInput = <K extends keyof UserInputs>(key: K, value: UserInputs[K]) => {
-    setInputs({ ...inputs, [key]: value });
-  };
+  const updateInput = useCallback(
+    <K extends keyof UserInputs>(key: K, value: UserInputs[K]) => {
+      setInputs({ ...inputs, [key]: value });
+    },
+    [inputs, setInputs]
+  );
+
+  const vehicleTypes = useMemo(
+    () => [
+      { id: 'petrol', label: 'Petrol Car' },
+      { id: 'diesel', label: 'Diesel Car' },
+      { id: 'twoWheeler', label: 'Two Wheeler (Bike/Scooter)' },
+      { id: 'electric', label: 'Electric Vehicle' },
+      { id: 'publicTransit', label: 'Public Transit' },
+    ],
+    []
+  );
+
+  const dietTypes = useMemo(() => ['meatHeavy', 'average', 'vegetarian', 'vegan'], []);
+  const recyclingTypes = useMemo(() => ['low', 'average', 'high'], []);
 
   return (
-    <div className="py-2">
+    <div className="py-2 contain-content">
       <h2 className="text-3xl md:text-4xl font-black mb-6 text-black border-b-2 border-black/10 pb-3">
         Lifestyle Data
       </h2>
@@ -84,13 +101,7 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                     Vehicle Type
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {[
-                      { id: 'petrol', label: 'Petrol Car' },
-                      { id: 'diesel', label: 'Diesel Car' },
-                      { id: 'twoWheeler', label: 'Two Wheeler (Bike/Scooter)' },
-                      { id: 'electric', label: 'Electric Vehicle' },
-                      { id: 'publicTransit', label: 'Public Transit' },
-                    ].map((type) => (
+                    {vehicleTypes.map((type) => (
                       <button
                         key={type.id}
                         aria-pressed={inputs.vehicleType === type.id}
@@ -268,7 +279,7 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                     Diet Type
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {['meatHeavy', 'average', 'vegetarian', 'vegan'].map((type) => (
+                    {dietTypes.map((type) => (
                       <button
                         key={type}
                         aria-pressed={inputs.dietType === type}
@@ -295,7 +306,7 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                     Recycling Level
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {['low', 'average', 'high'].map((type) => (
+                    {recyclingTypes.map((type) => (
                       <button
                         key={type}
                         aria-pressed={inputs.recyclingLevel === type}

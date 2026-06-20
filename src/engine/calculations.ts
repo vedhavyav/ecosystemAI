@@ -52,27 +52,15 @@ export async function calculateFootprint(inputs: UserInputs): Promise<FootprintR
 
   // Transportation (factors are now strictly per km)
   const kmDriven = parseNum(inputs.kilometersDrivenPerWeek);
-  let transportPerWeek = 0;
-
-  switch (inputs.vehicleType) {
-    case 'petrol':
-      transportPerWeek = kmDriven * emissionFactors.transportation.petrolCarPerKm;
-      break;
-    case 'diesel':
-      transportPerWeek = kmDriven * emissionFactors.transportation.dieselCarPerKm;
-      break;
-    case 'twoWheeler':
-      transportPerWeek = kmDriven * emissionFactors.transportation.twoWheelerPerKm;
-      break;
-    case 'electric':
-      transportPerWeek = kmDriven * emissionFactors.transportation.electricCarPerKm;
-      break;
-    case 'publicTransit':
-      transportPerWeek = kmDriven * emissionFactors.transportation.publicTransitPerKm;
-      break;
-    default:
-      transportPerWeek = kmDriven * emissionFactors.transportation.petrolCarPerKm; // fallback
-  }
+  // ponytail: standard object map over 18-line switch statement
+  const rateMap: Record<string, number> = {
+    petrol: emissionFactors.transportation.petrolCarPerKm,
+    diesel: emissionFactors.transportation.dieselCarPerKm,
+    twoWheeler: emissionFactors.transportation.twoWheelerPerKm,
+    electric: emissionFactors.transportation.electricCarPerKm,
+    publicTransit: emissionFactors.transportation.publicTransitPerKm,
+  };
+  const transportPerWeek = kmDriven * (rateMap[inputs.vehicleType] || rateMap.petrol);
 
   const transportAnnual =
     transportPerWeek * 52 +
@@ -86,17 +74,17 @@ export async function calculateFootprint(inputs: UserInputs): Promise<FootprintR
     parseNum(inputs.lpgCylindersPerYear) * emissionFactors.homeEnergy.lpgCylinder;
 
   // Diet
-  let dietAnnual = 0;
-  if (inputs.dietType === 'meatHeavy') dietAnnual = emissionFactors.diet.meatHeavy;
-  else if (inputs.dietType === 'average') dietAnnual = emissionFactors.diet.average;
-  else if (inputs.dietType === 'vegetarian') dietAnnual = emissionFactors.diet.vegetarian;
-  else if (inputs.dietType === 'vegan') dietAnnual = emissionFactors.diet.vegan;
+  // ponytail: straight map lookup
+  const dietAnnual = emissionFactors.diet[inputs.dietType] || 0;
 
   // Waste
-  let wasteAnnual = 0;
-  if (inputs.recyclingLevel === 'high') wasteAnnual = emissionFactors.waste.highRecycling;
-  else if (inputs.recyclingLevel === 'average') wasteAnnual = emissionFactors.waste.average;
-  else if (inputs.recyclingLevel === 'low') wasteAnnual = emissionFactors.waste.lowRecycling;
+  // ponytail: straight map lookup
+  const wasteMap: Record<string, number> = {
+    high: emissionFactors.waste.highRecycling,
+    average: emissionFactors.waste.average,
+    low: emissionFactors.waste.lowRecycling,
+  };
+  const wasteAnnual = wasteMap[inputs.recyclingLevel] || emissionFactors.waste.average;
 
   const totalCO2eKg = transportAnnual + energyAnnual + dietAnnual + wasteAnnual;
   const totalCO2eTons = totalCO2eKg / 1000;

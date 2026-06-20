@@ -37,6 +37,12 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-emerald-900 focus:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          >
+            Skip to main content
+          </a>
           <Navigation />
           {children}
         </body>

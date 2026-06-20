@@ -22,6 +22,8 @@ export default function FlashCard({ problem, solution, difficulty }: Props) {
         className="w-full h-full relative preserve-3d"
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
+        whileHover={{ scale: 1.05, y: -5 }}
+        whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.6, type: 'spring', stiffness: 200, damping: 20 }}
         style={{ transformStyle: 'preserve-3d' }}
       >

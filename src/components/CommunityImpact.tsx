@@ -1,23 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getCommunityStats, CommunityStats } from '@/lib/firebase/firestore';
+import { getCommunityStats } from '@/lib/firebase/firestore';
+import useSWR from 'swr';
 
 export function CommunityImpact() {
-  const [stats, setStats] = useState<CommunityStats | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    const fetchStats = async () => {
-      const data = await getCommunityStats();
-      if (mounted) setStats(data);
-    };
-    fetchStats();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const { data: stats } = useSWR('communityStats', getCommunityStats);
 
   if (!stats) {
     return (

@@ -5,7 +5,7 @@ import { Recommendation } from '@/engine/recommendations';
 import { motion, useReducedMotion } from 'framer-motion';
 import React from 'react';
 import { Sparkles, Leaf, Zap, Globe, Recycle } from 'lucide-react';
-import RadialOrbitalTimeline, { TimelineItem } from './ui/radial-orbital-timeline';
+import ProcessScrollTimeline, { TimelineItem } from './ui/process-scroll-timeline';
 import { calculateSvgDashOffset } from '@/services/ui-math';
 
 type Props = {
@@ -14,6 +14,8 @@ type Props = {
   showScore?: boolean;
   showTimeline?: boolean;
 };
+
+import { useAnimatedValue } from '@/hooks/useAnimatedValue';
 
 const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
   result,
@@ -24,16 +26,21 @@ const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
   const dashArray = 283;
   const dashOffset = calculateSvgDashOffset(result.ecoScore, dashArray);
   const shouldReduceMotion = useReducedMotion();
+  const animatedScore = useAnimatedValue(result.ecoScore, shouldReduceMotion ? 0 : 1500);
 
   // Map recommendations to the TimelineItem format
   const timelineData: TimelineItem[] = recommendations.slice(0, 5).map((rec, index) => {
-    let Icon = Sparkles;
-    const desc = rec.description.toLowerCase() + rec.title.toLowerCase();
-    if (desc.includes('energy') || desc.includes('electric') || desc.includes('power')) Icon = Zap;
-    else if (desc.includes('diet') || desc.includes('meat') || desc.includes('food')) Icon = Leaf;
-    else if (desc.includes('flight') || desc.includes('transit') || desc.includes('driv'))
-      Icon = Globe;
-    else if (desc.includes('recyc') || desc.includes('waste')) Icon = Recycle;
+    const desc = (rec.description + rec.title).toLowerCase();
+    // ponytail: regex ternary over if/else chain
+    const Icon = /energy|electric|power/.test(desc)
+      ? Zap
+      : /diet|meat|food/.test(desc)
+        ? Leaf
+        : /flight|transit|driv/.test(desc)
+          ? Globe
+          : /recyc|waste/.test(desc)
+            ? Recycle
+            : Sparkles;
 
     return {
       id: index + 1,
@@ -112,7 +119,7 @@ const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-7xl md:text-8xl font-black text-black tracking-tighter drop-shadow-sm"
               >
-                {result.ecoScore}
+                {animatedScore}
               </motion.span>
             </div>
           </div>
@@ -142,17 +149,17 @@ const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
         </div>
       )}
 
-      {/* Orbital Timeline for Insights */}
+      {/* Scroll Timeline for Insights */}
       {showTimeline && (
         <div className="relative overflow-hidden py-12">
           <h3 className="text-4xl md:text-5xl font-light text-white mb-4 flex items-center gap-4 relative z-10 justify-center">
             <Sparkles size={32} className="text-emerald-400" /> Sustainable Journey
           </h3>
-          <p className="text-emerald-100/70 mb-16 text-xl font-light relative z-10 text-center">
-            Click on nodes to explore your recommended actions.
+          <p className="text-emerald-100/70 mb-8 text-xl font-light relative z-10 text-center">
+            Scroll down to explore your recommended actions.
           </p>
-          <div className="w-full h-[600px] relative -mx-4">
-            {timelineData.length > 0 && <RadialOrbitalTimeline timelineData={timelineData} />}
+          <div className="w-full relative -mx-4">
+            {timelineData.length > 0 && <ProcessScrollTimeline timelineData={timelineData} />}
           </div>
         </div>
       )}

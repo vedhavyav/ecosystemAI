@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import EcoScoreDisplay from '../EcoScoreDisplay';
@@ -7,11 +8,43 @@ jest.mock('framer-motion', () => {
   const React = require('react');
   return {
     motion: {
-      div: ({ children, ...rest }: Record<string, unknown>) => React.createElement('div', rest, children),
-      span: ({ children, ...rest }: Record<string, unknown>) => React.createElement('span', rest, children),
-      circle: ({ children, ...rest }: Record<string, unknown>) => React.createElement('circle', rest, children),
+      div: ({
+        initial,
+        animate,
+        exit,
+        transition,
+        whileInView,
+        viewport,
+        style,
+        children,
+        ...rest
+      }: any) => React.createElement('div', rest, children),
+      span: ({
+        initial,
+        animate,
+        exit,
+        transition,
+        whileInView,
+        viewport,
+        style,
+        children,
+        ...rest
+      }: any) => React.createElement('span', rest, children),
+      circle: ({
+        initial,
+        animate,
+        exit,
+        transition,
+        whileInView,
+        viewport,
+        style,
+        children,
+        ...rest
+      }: any) => React.createElement('circle', rest, children),
     },
     useReducedMotion: () => true,
+    useScroll: () => ({ scrollYProgress: 0 }),
+    useTransform: () => 0,
   };
 });
 

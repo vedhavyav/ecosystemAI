@@ -19,7 +19,6 @@ export function generateRecommendations(
   inputs: UserInputs,
   result: FootprintResult
 ): Recommendation[] {
-  const getNum = (val: number | '') => (val === '' ? 0 : val);
   const recs: Recommendation[] = [];
 
   // 1. Dynamic AI Context Nudge (LLM Mock)
@@ -44,7 +43,7 @@ export function generateRecommendations(
     });
   }
 
-  if (getNum(inputs.flightHoursPerYear) > 10) {
+  if (Number(inputs.flightHoursPerYear) > 10) {
     recs.push({
       title: 'Reduce Air Travel',
       description:
@@ -64,7 +63,7 @@ export function generateRecommendations(
     });
   }
 
-  if (getNum(inputs.electricityKWhPerMonth) > 600) {
+  if (Number(inputs.electricityKWhPerMonth) > 600) {
     recs.push({
       title: 'Adopt Renewable Energy',
       description:

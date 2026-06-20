@@ -5,10 +5,15 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { UserInputs } from '@/engine/calculations';
 import { useFootprintCalculation } from '@/hooks/useFootprintCalculation';
 import Image from 'next/image';
-import Calculator3D from '@/components/Calculator3D';
-import EcoScoreDisplay from '@/components/EcoScoreDisplay';
-import WhatIfSimulator from '@/components/WhatIfSimulator';
-import { CommunityImpact } from '@/components/CommunityImpact';
+import dynamic from 'next/dynamic';
+
+const Calculator3D = dynamic(() => import('@/components/Calculator3D'), { ssr: false });
+const EcoScoreDisplay = dynamic(() => import('@/components/EcoScoreDisplay'), { ssr: false });
+const WhatIfSimulator = dynamic(() => import('@/components/WhatIfSimulator'), { ssr: false });
+const CommunityImpact = dynamic(
+  () => import('@/components/CommunityImpact').then((mod) => mod.CommunityImpact),
+  { ssr: false }
+);
 import { Leaf, Save } from 'lucide-react';
 import { useAuth } from '@/lib/firebase/authContext';
 import { saveFootprintRecord } from '@/lib/firebase/firestore';
@@ -48,7 +53,10 @@ export default function Home() {
   const backgroundDarkness = useTransform(scrollYProgress, [0, 0.4, 0.8, 1], [0.3, 0.5, 0.9, 0.95]);
 
   return (
-    <main className="flex flex-col items-center overflow-x-hidden font-sans relative">
+    <main
+      id="main-content"
+      className="flex flex-col items-center overflow-x-hidden font-sans relative"
+    >
       {/* Unsplash Nature Background Image via next/image */}
       <div className="fixed inset-0 pointer-events-none -z-50 opacity-15">
         <Image
@@ -56,7 +64,7 @@ export default function Home() {
           alt="Nature Background"
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          priority={false}
+          priority={true}
           unoptimized // Avoid hitting Cloudflare Image Optimization limits if not configured
         />
       </div>

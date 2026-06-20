@@ -13,7 +13,10 @@ export function Navigation() {
     return typeof window !== 'undefined' ? localStorage.getItem('userRole') === 'b2b' : false;
   });
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    queueMicrotask(() => setMounted(true));
     const handleRole = () => setIsB2B(localStorage.getItem('userRole') === 'b2b');
     window.addEventListener('role_updated', handleRole);
     return () => window.removeEventListener('role_updated', handleRole);
@@ -23,6 +26,10 @@ export function Navigation() {
     { name: 'Home', url: '/', icon: Home },
     { name: 'System Tests', url: '/tests', icon: LineChart },
   ];
+
+  if (!mounted) {
+    return <NavBar items={navItems} />;
+  }
 
   if (loading) {
     // Keep it clean while checking auth

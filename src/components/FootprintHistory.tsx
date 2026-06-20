@@ -11,38 +11,26 @@ import {
   AreaChart,
 } from 'recharts';
 import { format } from 'date-fns';
-import { getFootprintHistory, FootprintRecord } from '@/lib/firebase/firestore';
+import { getFootprintHistory } from '@/lib/firebase/firestore';
 import { useAuth } from '@/lib/firebase/authContext';
 import { Leaf } from 'lucide-react';
 import type { LocalizedEnvironmentalData } from '@/services/GoogleEarthEngineService';
 
+import useSWR from 'swr';
+
 export function FootprintHistory() {
-  const [history, setHistory] = useState<FootprintRecord[]>([]);
   const [isClient] = useState(() => typeof window !== 'undefined');
   const { user } = useAuth();
 
+  const { data: history = [], mutate } = useSWR(user ? `footprintHistory_${user.uid}` : null, () =>
+    getFootprintHistory(user!.uid).then((data) => data.reverse())
+  );
+
   useEffect(() => {
-    const fetchHistory = () => {
-      if (user) {
-        getFootprintHistory(user.uid)
-          .then((data) => {
-            setHistory(data.reverse()); // Reverse to show oldest first on the chart
-          })
-          .catch((e) => {
-            console.error('Error fetching footprint history', e);
-            setHistory([]);
-          });
-      } else {
-        setHistory([]);
-      }
-    };
-
-    fetchHistory();
-
-    const handleUpdate = () => fetchHistory();
+    const handleUpdate = () => mutate();
     window.addEventListener('ecosystem_history_updated', handleUpdate);
     return () => window.removeEventListener('ecosystem_history_updated', handleUpdate);
-  }, [user]);
+  }, [mutate]);
 
   if (!isClient) return null;
 
@@ -166,8 +154,8 @@ export function FootprintHistory() {
         </button>
       </div>
 
-      <div className="h-[300px] w-full">
-        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <div className="h-[300px] w-full" style={{ minWidth: '1px', minHeight: '300px' }}>
+        <ResponsiveContainer width="99%" height={300}>
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">

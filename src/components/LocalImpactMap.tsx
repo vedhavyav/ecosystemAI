@@ -33,24 +33,45 @@ function MapInner({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!placesLibrary || !map) return;
-
-    const service = new placesLibrary.PlacesService(map);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (!placesLibrary || !map || !(placesLibrary as any).Place) return;
 
     const typeKeyword = showEV ? 'EV Charging Station' : showVegan ? 'Vegan Restaurant' : 'Park';
 
-    const request = {
-      location: center,
-      radius: 5000,
-      keyword: typeKeyword,
-    };
+    async function fetchPlaces() {
+      try {
+        // Note: Field selection is required in the new API for performance/billing.
+        // But since we use searchByText, we can request basic fields if needed,
+        // though the JS SDK `searchByText` handles it.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const Place = (placesLibrary as any).Place;
+        const { places } = await Place.searchByText({
+          fields: ['displayName', 'location'],
+          textQuery: typeKeyword,
+          locationBias: { radius: 5000, center: center },
+          maxResultCount: 10,
+        });
 
-    service.nearbySearch(request, (results, status) => {
-      if (status === placesLibrary.PlacesServiceStatus.OK && results) {
-        setPlaces(results.slice(0, 10)); // Top 10
+        if (places && places.length > 0) {
+          // Map to match our expected format for backwards compatibility in the UI
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const formattedPlaces = places.map((p: any) => ({
+            geometry: { location: p.location },
+            name: p.displayName,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          })) as any;
+          setPlaces(formattedPlaces);
+        } else {
+          setPlaces([]);
+        }
+      } catch (err) {
+        console.error('Places API Error:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    }
+
+    fetchPlaces();
   }, [placesLibrary, map, center, showEV, showVegan]);
 
   return (
@@ -127,7 +148,7 @@ export default function LocalImpactMap({ result }: Props) {
   }
 
   return (
-    <div className="w-full rounded-[2rem] overflow-hidden shadow-inner relative min-h-[400px] border border-slate-200">
+    <div className="w-full rounded-[2rem] overflow-hidden shadow-inner relative min-h-[400px] border border-slate-200 contain-content">
       <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-md flex items-center gap-2 border border-slate-200 pointer-events-none">
         <MapIcon className="w-4 h-4 text-emerald-700" />
         <span className="text-sm font-bold text-slate-700">

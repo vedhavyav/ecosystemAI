@@ -4,10 +4,15 @@ import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { UserInputs } from '@/engine/calculations';
 import { useFootprintCalculation } from '@/hooks/useFootprintCalculation';
-import Calculator3D from '@/components/Calculator3D';
-import EcoScoreDisplay from '@/components/EcoScoreDisplay';
-import { FootprintHistory } from '@/components/FootprintHistory';
-import FlashCard from '@/components/ui/FlashCard';
+import dynamic from 'next/dynamic';
+
+const Calculator3D = dynamic(() => import('@/components/Calculator3D'), { ssr: false });
+const EcoScoreDisplay = dynamic(() => import('@/components/EcoScoreDisplay'), { ssr: false });
+const FootprintHistory = dynamic(
+  () => import('@/components/FootprintHistory').then((mod) => mod.FootprintHistory),
+  { ssr: false }
+);
+const FlashCard = dynamic(() => import('@/components/ui/FlashCard'), { ssr: false });
 import { saveFootprintRecord } from '@/lib/firebase/firestore';
 import { useAuth } from '@/lib/firebase/authContext';
 import { Save, CheckCircle2, Map } from 'lucide-react';
@@ -15,7 +20,7 @@ import GreenWallet from '@/components/GreenWallet';
 import UpiModal from '@/components/UpiModal';
 import RoleModal from '@/components/RoleModal';
 import { useRouter } from 'next/navigation';
-import LocalImpactMap from '@/components/LocalImpactMap';
+const LocalImpactMap = dynamic(() => import('@/components/LocalImpactMap'), { ssr: false });
 
 type Props = {
   userFirstName: string;
@@ -97,7 +102,10 @@ export default function DashboardClient({ userFirstName }: Props) {
   };
 
   return (
-    <main className="flex flex-col items-center overflow-x-hidden font-sans relative min-h-screen">
+    <main
+      id="main-content"
+      className="flex flex-col items-center overflow-x-hidden font-sans relative min-h-screen"
+    >
       {/* Dynamic Dark Background Overlay */}
       <motion.div
         className="fixed inset-0 bg-[#022c22] pointer-events-none -z-40"

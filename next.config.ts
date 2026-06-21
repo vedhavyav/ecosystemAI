@@ -11,7 +11,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  output: 'export'
+  // output: 'export' removed to support Next.js Server Actions
 };
 
 export default withPWA(nextConfig);

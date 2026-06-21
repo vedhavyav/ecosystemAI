@@ -50,7 +50,14 @@ jest.mock('framer-motion', () => {
 
 const mockResult = {
   ecoScore: 75,
+  totalCO2eKg: 10500,
   totalCO2eTons: 10.5,
+  categories: {
+    transportation: 4000,
+    homeEnergy: 3500,
+    diet: 2000,
+    waste: 1000,
+  },
   level: 'Eco-Warrior',
 };
 
@@ -64,11 +71,11 @@ const mockRecommendations = [
 ];
 
 describe('EcoScoreDisplay Component', () => {
-  it('renders the eco score and level correctly', () => {
+  it('renders the eco score and level correctly', async () => {
     render(<EcoScoreDisplay result={mockResult} recommendations={mockRecommendations} />);
 
     expect(screen.getByText('Your Eco Score')).toBeTruthy();
-    expect(screen.getByText('75')).toBeTruthy();
+    expect(await screen.findByText('75')).toBeTruthy();
     expect(screen.getByText('Eco-Warrior')).toBeTruthy();
     expect(screen.getByText('10.50')).toBeTruthy();
   });

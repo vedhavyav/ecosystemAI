@@ -1,9 +1,9 @@
 'use client';
 
-import { UserInputs } from '@/engine/calculations';
+import { UserInputs } from '@/engine/types';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import React, { useState, useCallback, useMemo } from 'react';
-import { Car, Zap, Utensils, Recycle } from 'lucide-react';
+import { Car, Zap, Utensils, Recycle, Info, AlertTriangle } from 'lucide-react';
 import { TubelightTabs } from './ui/tubelight-tabs';
 
 type Props = {
@@ -71,9 +71,14 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                 <div>
                   <label
                     htmlFor="input-kilometers"
-                    className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                    className="flex items-center gap-2 text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm group cursor-help"
+                    title="Estimate the total distance you travel in a typical week"
                   >
                     Kilometers Driven Per Week
+                    <Info
+                      size={14}
+                      className="text-slate-500 opacity-50 group-hover:opacity-100 transition-opacity"
+                    />
                   </label>
                   <div className="relative">
                     <input
@@ -95,6 +100,12 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                       km
                     </span>
                   </div>
+                  {typeof inputs.kilometersDrivenPerWeek === 'number' &&
+                    inputs.kilometersDrivenPerWeek > 1500 && (
+                      <p className="text-amber-600 text-xs mt-2 font-bold flex items-center gap-1">
+                        <AlertTriangle size={12} /> High value. Ensure this is weekly, not annual.
+                      </p>
+                    )}
                 </div>
                 <div>
                   <label className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm">
@@ -123,9 +134,14 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                 <div>
                   <label
                     htmlFor="input-flight"
-                    className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                    className="flex items-center gap-2 text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm group cursor-help"
+                    title="Total hours spent flying in a commercial plane over a year"
                   >
                     Flight Hours Per Year
+                    <Info
+                      size={14}
+                      className="text-slate-500 opacity-50 group-hover:opacity-100 transition-opacity"
+                    />
                   </label>
                   <div className="relative">
                     <input
@@ -147,6 +163,13 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                       hours
                     </span>
                   </div>
+                  {typeof inputs.flightHoursPerYear === 'number' &&
+                    inputs.flightHoursPerYear > 100 && (
+                      <p className="text-amber-600 text-xs mt-2 font-bold flex items-center gap-1">
+                        <AlertTriangle size={12} /> High value. This significantly impacts your
+                        footprint.
+                      </p>
+                    )}
                 </div>
               </>
             )}
@@ -187,9 +210,14 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                   <div>
                     <label
                       htmlFor="input-electricity"
-                      className="block text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm"
+                      className="flex items-center gap-2 text-xs font-black text-black mb-2 uppercase tracking-widest drop-shadow-sm group cursor-help"
+                      title="Average monthly household electricity consumption"
                     >
                       Electricity
+                      <Info
+                        size={14}
+                        className="text-slate-500 opacity-50 group-hover:opacity-100 transition-opacity"
+                      />
                     </label>
                     <div className="relative">
                       <input
@@ -211,6 +239,12 @@ const Calculator3D = React.memo(function Calculator3D({ inputs, setInputs }: Pro
                         kWh/m
                       </span>
                     </div>
+                    {typeof inputs.electricityKWhPerMonth === 'number' &&
+                      inputs.electricityKWhPerMonth > 2000 && (
+                        <p className="text-amber-600 text-xs mt-2 font-bold flex items-center gap-1">
+                          <AlertTriangle size={12} /> Very high monthly usage.
+                        </p>
+                      )}
                   </div>
                   <div>
                     <label

@@ -1,6 +1,6 @@
 'use client';
 
-import { UserInputs } from '@/engine/calculations';
+import { UserInputs } from '@/engine/types';
 import { Sliders } from 'lucide-react';
 import { LiquidButton } from './ui/liquid-glass-button';
 
@@ -28,11 +28,11 @@ export default function WhatIfSimulator({ inputs, setInputs }: Props) {
     <div className="py-12 flex flex-col items-center">
       <div className="flex flex-col items-center gap-4 mb-4 text-center">
         <div className="p-4 bg-emerald-950/40 backdrop-blur-md rounded-full shadow-lg border border-emerald-500/20">
-          <Sliders size={32} className="text-emerald-400" />
+          <Sliders size={32} className="text-emerald-300" />
         </div>
         <h2 className="text-5xl font-light text-white">Simulator</h2>
       </div>
-      <p className="text-emerald-100/70 mb-12 font-light text-xl text-center max-w-xl">
+      <p className="text-emerald-50/90 mb-12 font-light text-xl text-center max-w-xl">
         Trigger instant impact scenarios and see how your score adapts in real-time as you make
         changes.
       </p>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { UserInputs } from '@/engine/calculations';
+import { UserInputs } from '@/engine/types';
 import { useFootprintCalculation } from '@/hooks/useFootprintCalculation';
 import dynamic from 'next/dynamic';
 
@@ -12,10 +12,13 @@ const FootprintHistory = dynamic(
   () => import('@/components/FootprintHistory').then((mod) => mod.FootprintHistory),
   { ssr: false }
 );
-const FlashCard = dynamic(() => import('@/components/ui/FlashCard'), { ssr: false });
+const ProcessScrollTimeline = dynamic(() => import('@/components/ui/process-scroll-timeline'), {
+  ssr: false,
+});
+import { TimelineItem } from '@/components/ui/process-scroll-timeline';
 import { saveFootprintRecord } from '@/lib/firebase/firestore';
 import { useAuth } from '@/lib/firebase/authContext';
-import { Save, CheckCircle2, Map } from 'lucide-react';
+import { Save, CheckCircle2, Map, Sparkles, Leaf, Zap, Globe, Recycle } from 'lucide-react';
 import GreenWallet from '@/components/GreenWallet';
 import UpiModal from '@/components/UpiModal';
 import RoleModal from '@/components/RoleModal';
@@ -49,6 +52,36 @@ export default function DashboardClient({ userFirstName }: Props) {
   });
 
   const { result, recommendations } = useFootprintCalculation(inputs);
+
+  const timelineData: TimelineItem[] = recommendations.slice(0, 5).map((rec, index) => {
+    const desc = (rec.description + rec.title).toLowerCase();
+    const Icon = /energy|electric|power/.test(desc)
+      ? Zap
+      : /diet|meat|food/.test(desc)
+        ? Leaf
+        : /flight|transit|driv/.test(desc)
+          ? Globe
+          : /recyc|waste/.test(desc)
+            ? Recycle
+            : Sparkles;
+
+    return {
+      id: index + 1,
+      title: rec.title,
+      date: `Impact Score: ${rec.impactScore}/10`,
+      content: rec.description,
+      category: rec.difficulty,
+      icon: Icon,
+      relatedIds: index < recommendations.length - 1 ? [index + 2] : [],
+      status:
+        rec.difficulty === 'Easy'
+          ? 'completed'
+          : rec.difficulty === 'Medium'
+            ? 'in-progress'
+            : 'pending',
+      energy: rec.impactScore * 10,
+    };
+  });
 
   const [points, setPoints] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -165,7 +198,11 @@ export default function DashboardClient({ userFirstName }: Props) {
               {result ? (
                 <EcoScoreDisplay result={result} recommendations={[]} showTimeline={false} />
               ) : (
-                <div className="animate-pulse bg-white/10 rounded-2xl h-64 w-full"></div>
+                <div className="flex flex-col items-center justify-center py-8 opacity-50">
+                  <div className="w-48 h-48 rounded-full border-8 border-white/10 border-t-white/30 animate-spin mb-8"></div>
+                  <div className="h-6 w-32 bg-white/20 rounded-full animate-pulse mb-6"></div>
+                  <div className="h-4 w-48 bg-white/10 rounded-full animate-pulse"></div>
+                </div>
               )}
 
               <div className="mt-12 flex justify-center">
@@ -179,13 +216,17 @@ export default function DashboardClient({ userFirstName }: Props) {
                   }`}
                 >
                   {saved ? (
-                    <>
+                    <motion.div
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1, rotate: [0, 10, -10, 0] }}
+                      className="flex items-center gap-2"
+                    >
                       <CheckCircle2 className="w-6 h-6" />
                       Entry Logged!
-                    </>
+                    </motion.div>
                   ) : (
                     <>
-                      <Save className="w-6 h-6" />
+                      <Save className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
                       Log Current Score
                     </>
                   )}
@@ -207,21 +248,37 @@ export default function DashboardClient({ userFirstName }: Props) {
               Sustainable Journey Analysis
             </h2>
             <p className="text-emerald-100/70 text-lg">
-              Flip the cards to reveal actionable insights based on your calculator entries.
+              Scroll down to explore your recommended actions.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {result ? (
-              recommendations.map((rec, i) => (
-                <FlashCard
-                  key={i}
-                  problem={rec.description}
-                  solution={rec.title}
-                  difficulty={rec.difficulty}
-                />
-              ))
+          <div className="w-full relative -mx-4">
+            {result && timelineData.length > 0 ? (
+              <ProcessScrollTimeline timelineData={timelineData} />
             ) : (
-              <div className="animate-pulse bg-white/10 rounded-2xl h-32 w-full col-span-3"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 opacity-60">
+                <div className="md:col-start-2 bg-white/5 border border-white/10 rounded-[2rem] p-8 h-64 animate-pulse flex flex-col justify-between">
+                  <div className="flex justify-between items-center">
+                    <div className="w-12 h-12 bg-white/10 rounded-full"></div>
+                    <div className="w-16 h-6 bg-white/10 rounded-full"></div>
+                  </div>
+                  <div>
+                    <div className="w-3/4 h-6 bg-white/20 rounded mb-4"></div>
+                    <div className="w-full h-4 bg-white/10 rounded mb-2"></div>
+                    <div className="w-5/6 h-4 bg-white/10 rounded"></div>
+                  </div>
+                </div>
+                <div className="md:col-start-2 bg-white/5 border border-white/10 rounded-[2rem] p-8 h-64 animate-pulse flex flex-col justify-between">
+                  <div className="flex justify-between items-center">
+                    <div className="w-12 h-12 bg-white/10 rounded-full"></div>
+                    <div className="w-16 h-6 bg-white/10 rounded-full"></div>
+                  </div>
+                  <div>
+                    <div className="w-3/4 h-6 bg-white/20 rounded mb-4"></div>
+                    <div className="w-full h-4 bg-white/10 rounded mb-2"></div>
+                    <div className="w-5/6 h-4 bg-white/10 rounded"></div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>

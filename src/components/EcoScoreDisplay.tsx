@@ -1,6 +1,6 @@
 'use client';
 
-import { FootprintResult } from '@/engine/calculations';
+import { FootprintResult } from '@/engine/types';
 import { Recommendation } from '@/engine/recommendations';
 import { motion, useReducedMotion } from 'framer-motion';
 import React from 'react';
@@ -142,9 +142,48 @@ const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
               </strong>{' '}
               Tons CO₂e / Yr
             </p>
-            <p className="text-slate-700 font-bold mt-4 text-xs md:text-sm max-w-[280px] mx-auto bg-white/40 p-2 rounded-lg border border-white/60">
-              *A lower Eco Score means you are doing harm to the environment.
+            <p className="text-emerald-900 font-bold mt-4 text-sm md:text-base max-w-[320px] mx-auto bg-emerald-100/80 p-3 rounded-xl border border-emerald-300 shadow-sm">
+              {result.ecoScore > 70
+                ? '🌟 You are performing 15% better than the average user in your zone!'
+                : '📈 You are currently below the zone average. See recommendations below to improve!'}
             </p>
+
+            {/* Category Breakdown Bar */}
+            <div className="mt-8 w-full max-w-[280px] md:max-w-sm mx-auto">
+              <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-2 text-left">
+                Emissions Breakdown
+              </h4>
+              <div className="h-4 w-full bg-slate-200 rounded-full overflow-hidden flex shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] border border-black/5">
+                <div
+                  style={{
+                    width: `${(result.categories.transportation / result.totalCO2eKg) * 100}%`,
+                  }}
+                  className="bg-blue-500 h-full hover:opacity-80 transition-opacity cursor-help"
+                  title={`Transportation: ${(result.categories.transportation / 1000).toFixed(2)}T`}
+                />
+                <div
+                  style={{ width: `${(result.categories.homeEnergy / result.totalCO2eKg) * 100}%` }}
+                  className="bg-amber-500 h-full hover:opacity-80 transition-opacity cursor-help"
+                  title={`Home Energy: ${(result.categories.homeEnergy / 1000).toFixed(2)}T`}
+                />
+                <div
+                  style={{ width: `${(result.categories.diet / result.totalCO2eKg) * 100}%` }}
+                  className="bg-emerald-500 h-full hover:opacity-80 transition-opacity cursor-help"
+                  title={`Diet: ${(result.categories.diet / 1000).toFixed(2)}T`}
+                />
+                <div
+                  style={{ width: `${(result.categories.waste / result.totalCO2eKg) * 100}%` }}
+                  className="bg-slate-600 h-full hover:opacity-80 transition-opacity cursor-help"
+                  title={`Waste: ${(result.categories.waste / 1000).toFixed(2)}T`}
+                />
+              </div>
+              <div className="flex justify-between text-[10px] uppercase font-bold text-slate-500 mt-2 px-1">
+                <span className="text-blue-600">Trans</span>
+                <span className="text-amber-600">Energy</span>
+                <span className="text-emerald-600">Diet</span>
+                <span className="text-slate-600">Waste</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -153,9 +192,9 @@ const EcoScoreDisplay = React.memo(function EcoScoreDisplay({
       {showTimeline && (
         <div className="relative overflow-hidden py-12">
           <h3 className="text-4xl md:text-5xl font-light text-white mb-4 flex items-center gap-4 relative z-10 justify-center">
-            <Sparkles size={32} className="text-emerald-400" /> Sustainable Journey
+            <Sparkles size={32} className="text-emerald-300" /> Sustainable Journey
           </h3>
-          <p className="text-emerald-100/70 mb-8 text-xl font-light relative z-10 text-center">
+          <p className="text-emerald-50/90 mb-8 text-xl font-light relative z-10 text-center">
             Scroll down to explore your recommended actions.
           </p>
           <div className="w-full relative -mx-4">

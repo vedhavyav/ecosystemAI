@@ -40,7 +40,7 @@ export default function RoleModal({ isOpen, onSelectRole }: Props) {
               <h2 id="role-modal-title" className="text-3xl md:text-4xl font-black text-white mb-3">
                 Welcome to Ecosystem AI
               </h2>
-              <p className="text-emerald-100/70 text-lg">How will you be using the platform?</p>
+              <p className="text-emerald-50/90 text-lg">How will you be using the platform?</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -51,10 +51,10 @@ export default function RoleModal({ isOpen, onSelectRole }: Props) {
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-400/20 transition-all" />
                 <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <User className="text-emerald-400" size={28} />
+                  <User className="text-emerald-300" size={28} />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">Individual</h3>
-                <p className="text-emerald-100/60 leading-relaxed">
+                <p className="text-emerald-50/90 leading-relaxed">
                   Track your personal carbon footprint, view recommendations, and earn green
                   credits.
                 </p>
@@ -67,10 +67,10 @@ export default function RoleModal({ isOpen, onSelectRole }: Props) {
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-400/20 transition-all" />
                 <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Building2 className="text-emerald-400" size={28} />
+                  <Building2 className="text-emerald-300" size={28} />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">Corporate ESG</h3>
-                <p className="text-emerald-100/60 leading-relaxed">
+                <p className="text-emerald-50/90 leading-relaxed">
                   Manage B2B enterprise dashboards, track Scope 3 emissions, and export BRSR
                   compliance reports.
                 </p>

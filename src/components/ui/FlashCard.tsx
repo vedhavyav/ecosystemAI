@@ -48,7 +48,7 @@ export default function FlashCard({ problem, solution, difficulty }: Props) {
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
-            <Lightbulb className="text-emerald-400 w-6 h-6" />
+            <Lightbulb className="text-emerald-300 w-6 h-6" />
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-white mb-2">The Solution</h3>
           <p className="text-emerald-100/80">{solution}</p>

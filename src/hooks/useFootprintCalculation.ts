@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { UserInputs, FootprintResult } from '@/engine/calculations';
+import type { UserInputs, FootprintResult, Recommendation } from '@/engine/types';
 import { calculateFootprint } from '@/engine/calculations';
-import { generateRecommendations, Recommendation } from '@/engine/recommendations';
+import { generateRecommendations } from '@/engine/recommendations';
 
 export function useFootprintCalculation(inputs: UserInputs) {
   const [result, setResult] = useState<FootprintResult | null>(null);
@@ -16,7 +16,8 @@ export function useFootprintCalculation(inputs: UserInputs) {
         const res = await calculateFootprint(inputs);
         if (active) {
           setResult(res);
-          setRecommendations(generateRecommendations(inputs, res));
+          const recs = await generateRecommendations(inputs, res);
+          setRecommendations(recs);
         }
       } catch (error) {
         console.error('Calculation failed:', error);

@@ -1,12 +1,7 @@
-import { FootprintResult, UserInputs } from './calculations';
-import { generateLocalizedAINudge } from './MockLLMOrchestrator';
+'use server';
 
-export type Recommendation = {
-  title: string;
-  description: string;
-  impactScore: number; // 1 to 10
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-};
+import { FootprintResult, UserInputs, Recommendation } from './types';
+import { generateLocalizedAINudge } from './LLMOrchestrator';
 
 /**
  * Generates an array of tailored, actionable sustainability recommendations based on user footprint results.
@@ -15,14 +10,14 @@ export type Recommendation = {
  * @param {FootprintResult} result - The calculated carbon footprint results.
  * @returns {Recommendation[]} A sorted array of personalized recommendations.
  */
-export function generateRecommendations(
+export async function generateRecommendations(
   inputs: UserInputs,
   result: FootprintResult
-): Recommendation[] {
+): Promise<Recommendation[]> {
   const recs: Recommendation[] = [];
 
-  // 1. Dynamic AI Context Nudge (LLM Mock)
-  const aiNudge = generateLocalizedAINudge(inputs);
+  // 1. Dynamic AI Context Nudge (LLM)
+  const aiNudge = await generateLocalizedAINudge(inputs);
   recs.push({
     title: 'AI Contextual Insight',
     description: aiNudge,

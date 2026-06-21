@@ -1,13 +1,13 @@
-import { UserInputs } from './calculations';
+import { UserInputs } from './types';
 
 /**
- * A sophisticated Mock LLM Orchestrator that generates hyper-personalized, 
+ * A sophisticated Mock LLM Orchestrator that generates hyper-personalized,
  * localized Indian nudges based on user inputs. It mimics what an LLM with RAG
  * over a local infrastructure database would output.
  */
 export function generateLocalizedAINudge(inputs: UserInputs): string {
   const getNum = (val: number | '') => (val === '' ? 0 : val);
-  
+
   // Example 1: Localized Transit based on Zone
   if (inputs.vehicleType !== 'publicTransit' && getNum(inputs.kilometersDrivenPerWeek) > 50) {
     if (inputs.indianZone === 'southern') {
@@ -40,5 +40,5 @@ export function generateLocalizedAINudge(inputs: UserInputs): string {
     return `You're using >8 LPG cylinders. Switching to an induction cooktop for boiling water and making tea leverages India's growing renewable grid mix and cuts indoor emissions.`;
   }
 
-  return "You have an excellent lifestyle! Consider advocating for neighborhood waste segregation or EV adoption in your local RWA.";
+  return 'You have an excellent lifestyle! Consider advocating for neighborhood waste segregation or EV adoption in your local RWA.';
 }

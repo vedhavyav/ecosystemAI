@@ -119,8 +119,6 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
     return relatedItems.includes(itemId);
   };
 
-
-
   return (
     <div
       className="w-full h-full min-h-[500px] flex flex-col items-center justify-center bg-transparent overflow-hidden rounded-3xl"
@@ -233,7 +231,7 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
                     {/* HUD Content */}
                     <div className="bg-black/80 backdrop-blur-md border border-emerald-500/30 p-5 rounded-none pointer-events-auto">
                       <div className="flex justify-between items-center mb-3">
-                        <div className="text-[10px] font-bold tracking-[0.2em] text-emerald-400 uppercase">
+                        <div className="text-[10px] font-bold tracking-[0.2em] text-emerald-300 uppercase">
                           {item.status === 'completed'
                             ? 'EASY'
                             : item.status === 'in-progress'
@@ -242,11 +240,11 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
                         </div>
                       </div>
                       <h4 className="text-xl font-light text-white mb-3">{item.title}</h4>
-                      <p className="text-sm text-emerald-100/70 font-light leading-relaxed mb-6">
+                      <p className="text-sm text-emerald-50/90 font-light leading-relaxed mb-6">
                         {item.content}
                       </p>
 
-                      <div className="flex justify-between items-center text-[10px] tracking-widest mb-2 text-emerald-500 font-mono">
+                      <div className="flex justify-between items-center text-[10px] tracking-widest mb-2 text-emerald-300 font-mono">
                         <span>IMPACT POTENTIAL</span>
                         <span>{item.energy}%</span>
                       </div>

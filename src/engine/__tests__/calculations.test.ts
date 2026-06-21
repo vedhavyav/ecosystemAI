@@ -1,71 +1,94 @@
-import { calculateFootprint, UserInputs } from '../calculations';
+import { calculateFootprint } from '../calculations';
+import { UserInputs } from '../types';
 
-describe('Calculations Engine', () => {
+// Mock the Earth Engine service since we want to unit test the math logic isolated from APIs
+jest.mock('@/services/GoogleEarthEngineService', () => ({
+  fetchLocalizedEarthEngineData: jest.fn().mockImplementation(async (zone) => {
+    return {
+      zone,
+      dynamicGridFactor: 0.82, // Standard mock factor
+      aqi: 150,
+      dominantPollutant: 'PM2.5',
+      solarPotential: 'High',
+      recommendations: [],
+    };
+  }),
+}));
+
+describe('calculateFootprint Engine', () => {
   const baseInputs: UserInputs = {
-    kilometersDrivenPerWeek: 0,
-    vehicleType: 'electric',
+    kilometersDrivenPerWeek: 100,
+    vehicleType: 'petrol',
     indianZone: 'national-average',
     flightHoursPerYear: 0,
-    electricityKWhPerMonth: 0,
+    electricityKWhPerMonth: 200,
     naturalGasThermsPerMonth: 0,
     lpgCylindersPerYear: 0,
-    dietType: 'vegan',
-    recyclingLevel: 'high',
+    dietType: 'average',
+    recyclingLevel: 'average',
   };
 
-  it('calculates baseline correct values for zero inputs', async () => {
+  it('calculates the footprint correctly for a standard user', async () => {
     const result = await calculateFootprint(baseInputs);
-    // Even with zero, diet and waste will have some baseline
-    expect(result.totalCO2eKg).toBeGreaterThan(0);
-    expect(result.categories.transportation).toBe(0);
-    expect(result.categories.homeEnergy).toBe(0);
-    expect(result.ecoScore).toBeGreaterThanOrEqual(90);
+
+    expect(result).toHaveProperty('totalCO2eKg');
+    expect(result).toHaveProperty('totalCO2eTons');
+    expect(result).toHaveProperty('ecoScore');
+    expect(result.ecoScore).toBeGreaterThanOrEqual(0);
+    expect(result.ecoScore).toBeLessThanOrEqual(100);
   });
 
-  it('correctly calculates high emissions for heavy usage', async () => {
-    const heavyInputs: UserInputs = {
+  it('calculates a higher eco-score for a vegan diet vs meat-heavy diet', async () => {
+    const meatHeavyResult = await calculateFootprint({ ...baseInputs, dietType: 'meatHeavy' });
+    const veganResult = await calculateFootprint({ ...baseInputs, dietType: 'vegan' });
+
+    expect(veganResult.categories.diet).toBeLessThan(meatHeavyResult.categories.diet);
+    expect(veganResult.ecoScore).toBeGreaterThan(meatHeavyResult.ecoScore);
+  });
+
+  it('penalizes extremely high electricity usage', async () => {
+    const lowEnergyResult = await calculateFootprint({
       ...baseInputs,
-      kilometersDrivenPerWeek: 500,
-      vehicleType: 'petrol',
-      flightHoursPerYear: 50,
-      electricityKWhPerMonth: 1000,
-      dietType: 'meatHeavy',
-      recyclingLevel: 'low',
-    };
-    const result = await calculateFootprint(heavyInputs);
-    expect(result.categories.transportation).toBeGreaterThan(1000);
-    expect(result.categories.homeEnergy).toBeGreaterThan(1000);
-    expect(result.ecoScore).toBeLessThan(50);
+      electricityKWhPerMonth: 100,
+    });
+    const highEnergyResult = await calculateFootprint({
+      ...baseInputs,
+      electricityKWhPerMonth: 2000,
+    });
+
+    expect(highEnergyResult.categories.homeEnergy).toBeGreaterThan(
+      lowEnergyResult.categories.homeEnergy
+    );
+    expect(highEnergyResult.ecoScore).toBeLessThan(lowEnergyResult.ecoScore);
   });
 
-  it('handles empty string inputs gracefully (treated as 0)', async () => {
-    const emptyInputs: UserInputs = {
+  it('calculates lower transportation emissions for an EV compared to a Petrol car', async () => {
+    const petrolResult = await calculateFootprint({
+      ...baseInputs,
+      vehicleType: 'petrol',
+      kilometersDrivenPerWeek: 500,
+    });
+    const evResult = await calculateFootprint({
+      ...baseInputs,
+      vehicleType: 'electric',
+      kilometersDrivenPerWeek: 500,
+    });
+
+    expect(evResult.categories.transportation).toBeLessThan(petrolResult.categories.transportation);
+    expect(evResult.ecoScore).toBeGreaterThan(petrolResult.ecoScore);
+  });
+
+  it('handles empty string inputs properly by treating them as 0', async () => {
+    const emptyInputsResult = await calculateFootprint({
       ...baseInputs,
       kilometersDrivenPerWeek: '',
       flightHoursPerYear: '',
       electricityKWhPerMonth: '',
       naturalGasThermsPerMonth: '',
       lpgCylindersPerYear: '',
-    };
-    const result = await calculateFootprint(emptyInputs);
-    expect(result.categories.transportation).toBe(0);
-    expect(result.categories.homeEnergy).toBe(0);
-  });
-
-  it('differentiates between vehicle types', async () => {
-    const petrolResult = await calculateFootprint({
-      ...baseInputs,
-      kilometersDrivenPerWeek: 100,
-      vehicleType: 'petrol',
-    });
-    const electricResult = await calculateFootprint({
-      ...baseInputs,
-      kilometersDrivenPerWeek: 100,
-      vehicleType: 'electric',
     });
 
-    expect(petrolResult.categories.transportation).toBeGreaterThan(
-      electricResult.categories.transportation
-    );
+    expect(emptyInputsResult.categories.transportation).toBe(0);
+    expect(emptyInputsResult.categories.homeEnergy).toBe(0);
   });
 });

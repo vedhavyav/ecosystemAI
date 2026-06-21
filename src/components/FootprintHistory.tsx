@@ -37,9 +37,9 @@ export function FootprintHistory() {
   if (history.length === 0) {
     return (
       <div className="w-full h-64 bg-white/10 backdrop-blur-md border border-white/20 rounded-[2rem] flex flex-col items-center justify-center p-6 text-center">
-        <Leaf className="w-12 h-12 text-emerald-400 mb-4 opacity-50" />
+        <Leaf className="w-12 h-12 text-emerald-300 mb-4 opacity-50" />
         <h3 className="text-white font-bold text-xl mb-2">No Tracking History Yet</h3>
-        <p className="text-emerald-100/70 text-sm max-w-sm">
+        <p className="text-emerald-50/90 text-sm max-w-sm">
           {user
             ? 'Calculate your footprint on the home page and save it to see your progress!'
             : 'Sign in and save footprints to see your progress over time!'}
@@ -128,7 +128,7 @@ export function FootprintHistory() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
         <h3 className="text-2xl font-black text-white drop-shadow-sm flex items-center gap-2">
-          <Leaf className="text-emerald-400" /> Score Progression
+          <Leaf className="text-emerald-300" /> Score Progression
         </h3>
         <button
           onClick={handleExportCSV}

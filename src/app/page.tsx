@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { UserInputs } from '@/engine/calculations';
+import { UserInputs } from '@/engine/types';
 import { useFootprintCalculation } from '@/hooks/useFootprintCalculation';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';

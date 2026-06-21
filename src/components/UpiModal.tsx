@@ -52,10 +52,12 @@ export default function UpiModal({ isOpen, onClose, amount }: Props) {
 
             <div className="flex flex-col items-center text-center mt-4">
               <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-6 border border-emerald-500/50">
-                <CheckCircle size={32} className="text-emerald-400" />
+                <CheckCircle size={32} className="text-emerald-300" />
               </div>
 
-              <h3 id="upi-modal-title" className="text-2xl font-black text-white mb-2">Redeem Green Credits</h3>
+              <h3 id="upi-modal-title" className="text-2xl font-black text-white mb-2">
+                Redeem Green Credits
+              </h3>
               <p className="text-emerald-200/80 mb-8 font-medium">
                 Scan the QR code below via any UPI app (GPay, PhonePe, Paytm) to claim your reward.
               </p>
@@ -77,11 +79,11 @@ export default function UpiModal({ isOpen, onClose, amount }: Props) {
                 </div>
               </div>
 
-              <div className="text-5xl font-black text-emerald-400 tracking-tighter mb-6">
+              <div className="text-5xl font-black text-emerald-300 tracking-tighter mb-6">
                 ₹{amount}
               </div>
 
-              <div className="w-full bg-black/20 rounded-xl p-4 text-sm text-emerald-100/60 font-mono mb-8 border border-white/5">
+              <div className="w-full bg-black/20 rounded-xl p-4 text-sm text-emerald-50/90 font-mono mb-8 border border-white/5">
                 <div className="flex justify-between mb-2">
                   <span>Merchant:</span>
                   <span className="text-white">EcoAI Rewards Govt.</span>

@@ -29,7 +29,7 @@ export function CommunityImpact() {
       <h2 className="text-3xl font-black text-center mb-8 text-slate-800">Community Impact</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 text-center shadow-sm border border-slate-100">
-          <div className="text-5xl font-black text-emerald-500 mb-2">
+          <div className="text-5xl font-black text-emerald-600 mb-2">
             {stats.tonsSaved.toLocaleString()}
           </div>
           <div className="text-sm text-slate-500 uppercase tracking-wider font-semibold">
@@ -37,7 +37,7 @@ export function CommunityImpact() {
           </div>
         </div>
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 text-center shadow-sm border border-slate-100">
-          <div className="text-5xl font-black text-emerald-500 mb-2">
+          <div className="text-5xl font-black text-emerald-600 mb-2">
             {stats.treesEquivalent.toLocaleString()}
           </div>
           <div className="text-sm text-slate-500 uppercase tracking-wider font-semibold">
@@ -45,7 +45,7 @@ export function CommunityImpact() {
           </div>
         </div>
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 text-center shadow-sm border border-slate-100">
-          <div className="text-5xl font-black text-emerald-500 mb-2">
+          <div className="text-5xl font-black text-emerald-600 mb-2">
             {stats.activeUsers.toLocaleString()}
           </div>
           <div className="text-sm text-slate-500 uppercase tracking-wider font-semibold">

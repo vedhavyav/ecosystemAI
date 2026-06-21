@@ -1,4 +1,4 @@
-import { UserInputs } from '@/engine/calculations';
+import { UserInputs } from '@/engine/types';
 
 export type LocalizedEnvironmentalData = {
   dynamicGridFactor: number; // kg CO2 / kWh

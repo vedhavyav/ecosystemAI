@@ -1,44 +1,7 @@
+'use server';
+
 import { emissionFactors } from '../config/emissionFactors';
-
-export type UserInputs = {
-  kilometersDrivenPerWeek: number | '';
-  vehicleType: 'petrol' | 'diesel' | 'twoWheeler' | 'electric' | 'publicTransit';
-  indianZone:
-    | 'southern'
-    | 'northern'
-    | 'western'
-    | 'eastern'
-    | 'north-eastern'
-    | 'national-average';
-  flightHoursPerYear: number | '';
-  electricityKWhPerMonth: number | '';
-  naturalGasThermsPerMonth: number | '';
-  lpgCylindersPerYear: number | '';
-  dietType: 'meatHeavy' | 'average' | 'vegetarian' | 'vegan';
-  recyclingLevel: 'high' | 'average' | 'low';
-};
-
-export type FootprintResult = {
-  totalCO2eKg: number;
-  totalCO2eTons: number;
-  categories: {
-    transportation: number;
-    homeEnergy: number;
-    diet: number;
-    waste: number;
-  };
-  ecoScore: number;
-  level: string;
-  localData: LocalizedEnvironmentalData;
-};
-
-/**
- * Calculates the total carbon footprint and categorizes it based on user inputs.
- *
- * @param {UserInputs} inputs - The specific lifestyle data inputs provided by the user.
- * @returns {FootprintResult} An object containing total emissions, categorized emissions,
- *                            and an eco-score out of 100 with an associated level.
- */
+import { UserInputs, FootprintResult } from './types';
 import {
   fetchLocalizedEarthEngineData,
   LocalizedEnvironmentalData,

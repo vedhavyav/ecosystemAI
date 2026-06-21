@@ -1,4 +1,4 @@
-import { FootprintResult } from './calculations';
+import { FootprintResult } from './types';
 
 export type TrackingEntry = {
   id: string;

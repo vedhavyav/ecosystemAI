@@ -1,6 +1,6 @@
 'use client';
 
-import { FootprintResult } from '@/engine/calculations';
+import { FootprintResult } from '@/engine/types';
 import { MapPin, BatteryCharging, LeafyGreen, Loader2, Map as MapIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {

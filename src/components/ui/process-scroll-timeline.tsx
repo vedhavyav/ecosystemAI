@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
 
 export interface TimelineItem {
   id: number;
@@ -21,6 +22,19 @@ interface ProcessScrollTimelineProps {
 
 export default function ProcessScrollTimeline({ timelineData }: ProcessScrollTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [committed, setCommitted] = useState<Record<number, boolean>>({});
+
+  const handleCommit = (id: number) => {
+    if (committed[id]) return;
+    setCommitted((prev) => ({ ...prev, [id]: true }));
+
+    // Award 5 Green Points
+    if (typeof window !== 'undefined') {
+      const currentPoints = Number(localStorage.getItem('greenPoints') || 0);
+      localStorage.setItem('greenPoints', (currentPoints + 5).toString());
+      window.dispatchEvent(new Event('points_updated'));
+    }
+  };
 
   // Track overall scroll progress for the central line
   const { scrollYProgress } = useScroll({
@@ -64,7 +78,7 @@ export default function ProcessScrollTimeline({ timelineData }: ProcessScrollTim
 
                 {/* Header: Icon & Status */}
                 <div className="flex items-center justify-between mb-6 relative z-10">
-                  <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-emerald-400/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:border-emerald-400 group-hover:text-emerald-300 transition-all duration-500 shadow-[0_0_15px_rgba(52,211,153,0)] group-hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]">
+                  <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-emerald-400/30 flex items-center justify-center text-emerald-300 group-hover:scale-110 group-hover:border-emerald-400 group-hover:text-emerald-300 transition-all duration-500 shadow-[0_0_15px_rgba(52,211,153,0)] group-hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]">
                     <Icon size={24} />
                   </div>
 
@@ -89,7 +103,7 @@ export default function ProcessScrollTimeline({ timelineData }: ProcessScrollTim
 
                 {/* Impact Progress Bar */}
                 <div className="mt-auto relative z-10">
-                  <div className="flex justify-between items-center text-[10px] tracking-widest mb-3 text-emerald-400 font-mono">
+                  <div className="flex justify-between items-center text-[10px] tracking-widest mb-3 text-emerald-300 font-mono">
                     <span>IMPACT POTENTIAL</span>
                     <span className="font-bold">{item.energy}%</span>
                   </div>
@@ -102,6 +116,28 @@ export default function ProcessScrollTimeline({ timelineData }: ProcessScrollTim
                       className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"
                     />
                   </div>
+                </div>
+
+                {/* I'll Try This Button */}
+                <div className="mt-6 pt-6 border-t border-white/10 flex justify-center relative z-10">
+                  <button
+                    onClick={() => handleCommit(item.id)}
+                    disabled={committed[item.id]}
+                    className={`w-full py-3 rounded-xl border font-bold tracking-widest text-xs transition-all duration-300 flex items-center justify-center gap-2 ${
+                      committed[item.id]
+                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 cursor-default'
+                        : 'bg-emerald-500/10 hover:bg-emerald-500/30 border-emerald-500/30 hover:border-emerald-400 text-emerald-300 active:scale-95'
+                    }`}
+                  >
+                    {committed[item.id] ? (
+                      <>
+                        {' '}
+                        <CheckCircle2 size={16} /> COMMITTED (+5 PTS){' '}
+                      </>
+                    ) : (
+                      "I'LL TRY THIS"
+                    )}
+                  </button>
                 </div>
               </div>
             </motion.div>

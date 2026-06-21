@@ -1,16 +1,15 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Navigation } from '@/components/Navigation';
 import { AuthProvider } from '@/lib/firebase/authContext';
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+import { Handlee } from 'next/font/google';
+
+const handlee = Handlee({
+  weight: '400',
   subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-handlee',
 });
 
 export const metadata: Metadata = {
@@ -34,9 +33,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={handlee.variable}>
       <AuthProvider>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className="font-sans antialiased">
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-emerald-900 focus:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"

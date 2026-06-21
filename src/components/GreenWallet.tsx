@@ -40,7 +40,7 @@ export default function GreenWallet({ points, onRedeem }: Props) {
         <div className="text-white font-medium tracking-tight text-[clamp(2.5rem,8vw,4rem)] leading-none mb-2">
           ₹{points.toLocaleString()}
         </div>
-        <p className="text-emerald-400 text-xs md:text-sm font-medium tracking-wide mt-2">
+        <p className="text-emerald-300 text-xs md:text-sm font-medium tracking-wide mt-2">
           💡 Earn ₹10 for every Eco Score point you log above the national baseline of 50. Better
           score = Higher payouts.
         </p>
@@ -57,11 +57,7 @@ export default function GreenWallet({ points, onRedeem }: Props) {
         </div>
       </div>
 
-      <UpiModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        amount={points} 
-      />
+      <UpiModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} amount={points} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { db } from './config';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { FootprintResult, UserInputs } from '@/engine/calculations';
+import { FootprintResult, UserInputs } from '@/engine/types';
 
 export type UserProfile = {
   uid: string;

@@ -1,5 +1,3 @@
-'use server';
-
 import { FootprintResult, UserInputs, Recommendation } from './types';
 import { generateLocalizedAINudge } from './LLMOrchestrator';
 

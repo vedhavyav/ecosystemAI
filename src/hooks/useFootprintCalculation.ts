@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { UserInputs, FootprintResult, Recommendation } from '@/engine/types';
-import { calculateFootprint } from '@/engine/calculations';
-import { generateRecommendations } from '@/engine/recommendations';
 
 export function useFootprintCalculation(inputs: UserInputs) {
   const [result, setResult] = useState<FootprintResult | null>(null);
@@ -13,11 +11,21 @@ export function useFootprintCalculation(inputs: UserInputs) {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await calculateFootprint(inputs);
+        const response = await fetch('/api/footprint', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(inputs),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch from API route');
+        }
+
+        const data = await response.json();
+
         if (active) {
-          setResult(res);
-          const recs = await generateRecommendations(inputs, res);
-          setRecommendations(recs);
+          setResult(data.result);
+          setRecommendations(data.recommendations);
         }
       } catch (error) {
         console.error('Calculation failed:', error);

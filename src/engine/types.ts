@@ -30,6 +30,7 @@ export type FootprintResult = {
   ecoScore: number;
   level: string;
   localData: LocalizedEnvironmentalData;
+  error?: string;
 };
 
 export type Recommendation = {

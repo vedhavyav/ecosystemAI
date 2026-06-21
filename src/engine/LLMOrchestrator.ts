@@ -1,5 +1,3 @@
-'use server';
-
 import { UserInputs } from './types';
 import OpenAI from 'openai';
 

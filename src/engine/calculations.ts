@@ -1,5 +1,3 @@
-'use server';
-
 import { emissionFactors } from '../config/emissionFactors';
 import { UserInputs, FootprintResult } from './types';
 import { fetchLocalizedEarthEngineData } from '@/services/GoogleEarthEngineService';

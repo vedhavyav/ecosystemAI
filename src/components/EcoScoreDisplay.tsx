@@ -1,7 +1,6 @@
 'use client';
 
-import { FootprintResult } from '@/engine/types';
-import { Recommendation } from '@/engine/recommendations';
+import { FootprintResult, Recommendation } from '@/engine/types';
 import { motion, useReducedMotion } from 'framer-motion';
 import React from 'react';
 import { Sparkles, Leaf, Zap, Globe, Recycle } from 'lucide-react';

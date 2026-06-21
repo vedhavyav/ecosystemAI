@@ -2,10 +2,7 @@
 
 import { emissionFactors } from '../config/emissionFactors';
 import { UserInputs, FootprintResult } from './types';
-import {
-  fetchLocalizedEarthEngineData,
-  LocalizedEnvironmentalData,
-} from '@/services/GoogleEarthEngineService';
+import { fetchLocalizedEarthEngineData } from '@/services/GoogleEarthEngineService';
 
 export async function calculateFootprint(inputs: UserInputs): Promise<FootprintResult> {
   const parseNum = (val: number | '') => (val === '' ? 0 : Number(val));
